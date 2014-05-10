@@ -1,4 +1,4 @@
---MANAGE BUY_ITEM,REMOVE_ITEM
+--MANAGE BUY_ITEM,REMOVE_ITEM ~~~
 class "ITEM_MANAGER"--{
 local ITEM_MANAGER_OFFENSIVE_AD_TARGET = {
 	--[1042]={name='Dagger'}, --test purpose
