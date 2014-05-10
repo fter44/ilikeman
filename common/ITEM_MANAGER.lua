@@ -22,34 +22,37 @@ local ITEM_MANAGER_OFFENSIVE_AD_NONTARGET = {
 }
 local ITEM_MANAGER_OFFENSIVE_AP_NONTARGET = {
 }
-function ITEM_MANAGER:__init(menu,STS)
+function ITEM_MANAGER:__init(menu,STS,disable)
 	self.OFFENSIVE_AD_TARGET={} --[id]=slot
 	self.OFFENSIVE_AD_NONTARGET={}
 	self.OFFENSIVE_AP_TARGET={}
 	self.OFFENSIVE_AP_NONTARGET={}
 	self.STS=STS
 	self.lasttick=0
-	AddTickCallback(function() self:OnTick_CHECK() end)	
-    AddTickCallback(function() self:OnTick_CAST() end)
+	if not disable then
+		AddTickCallback(function() self:OnTick_CHECK() end)	
+		AddTickCallback(function() self:OnTick_CAST() end)
+	end
 	if menu then
-		self:LoadToMenu(menu,STS)
+		self:LoadToMenu(menu,STS,disable)
 		self.menu=menu
 	end
 end
-function ITEM_MANAGER:LoadToMenu(menu,STS)
+function ITEM_MANAGER:LoadToMenu(menu,STS,disable)
 	assert(STS~=nil,"SET [#2:STS] VALUE")
 	self.STS=STS
 	if self.menu then   --menu already registered
 		return 
 	end
 	self.menu=menu
-	menu:addParam("castOffAD","CAST OFFENSIVE AD",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("C"))
-	menu:addParam("castOffAP","CAST OFFENSIVE AP",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("C"))
 	menu:addSubMenu("OFFENSIVES","OFFENSIVES")
 	menu:addSubMenu("DEFENSIVES","DEVENSIVES")
 	menu:addParam("forceAO","FORCE ALL Offs",SCRIPT_PARAM_ONKEYTOGGLE, false, 48) menu:permaShow("forceAO")
 	menu:addParam("disableforceAO","Auto Disable ^ after seconds", SCRIPT_PARAM_SLICE, 60, 0, 120)
-	
+	if not disable then
+		menu:addParam("castOffAD","CAST OFFENSIVE AD",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("C"))
+		menu:addParam("castOffAP","CAST OFFENSIVE AP",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("C"))
+	end
 	return self
 end
 function ITEM_MANAGER:OnTick_CHECK() --CHECK BUY,REMOVE ITEMS  && Disable Auto Disable "force all offensiveS"
@@ -135,27 +138,27 @@ function ITEM_MANAGER:OnTick_CAST()
 	if not ValidTarget(target) then return end	
 	--CAST
 	if self.menu.castOffAD then
-		self:CAST_OFFENSIVE_AD(target,self.menu.forceAO)
+		self:CAST_OFFENSIVE_AD(target)
 	end
 	if self.menu.castOffAP then
-		self:CAST_OFFENSIVE_AP(target,self.menu.forceAO)
+		self:CAST_OFFENSIVE_AP(target)
 	end
 end
 function ITEM_MANAGER:CAST_OFFENSIVE_AD(unit,force)
 	for id,slot in pairs(self.OFFENSIVE_AD_TARGET) do
-		if (self.menu.OFFENSIVES[tostring(id)] or force) and (player:CanUseSpell(slot) == READY) and GetDistanceSqr(unit) <=ITEM_MANAGER_OFFENSIVE_AD_TARGET[id].rangeSqr then
+		if (self.menu.OFFENSIVES[tostring(id)] or sef.menu.forceAO or force) and (player:CanUseSpell(slot) == READY) and GetDistanceSqr(unit) <=ITEM_MANAGER_OFFENSIVE_AD_TARGET[id].rangeSqr then
 			CastSpell(slot,unit)
 		end
 	end
 	for id,slot in pairs(self.OFFENSIVE_AD_NONTARGET) do
-		if (self.menu.OFFENSIVES[tostring(id)] or force) and (player:CanUseSpell(slot) == READY) and GetDistanceSqr(unit) <= ITEM_MANAGER_OFFENSIVE_AD_NONTARGET[id].rangeSqr then
+		if (self.menu.OFFENSIVES[tostring(id)] or sef.menu.forceAO or force) and (player:CanUseSpell(slot) == READY) and GetDistanceSqr(unit) <= ITEM_MANAGER_OFFENSIVE_AD_NONTARGET[id].rangeSqr then
 			CastSpell(slot,unit)
 		end
 	end
 end
 function ITEM_MANAGER:CAST_OFFENSIVE_AP(unit,force)
 	for id,slot in pairs(self.OFFENSIVE_AP_TARGET) do
-		if (self.menu.OFFENSIVES[tostring(id)] or force) and (player:CanUseSpell(slot) == READY) and GetDistanceSqr(unit) <= ITEM_MANAGER_OFFENSIVE_AP_TARGET[id].rangeSqr then
+		if (self.menu.OFFENSIVES[tostring(id)] or sef.menu.forceAO or force) and (player:CanUseSpell(slot) == READY) and GetDistanceSqr(unit) <= ITEM_MANAGER_OFFENSIVE_AP_TARGET[id].rangeSqr then
 			CastSpell(slot,unit)
 		end
 	end
