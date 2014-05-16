@@ -18,7 +18,7 @@ local lib_infos={
 	["DRAW_POS_MANAGER"]  	= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua",
 }
 local SCRIPT_NAME = "Kassadin"
-local My_Version = 0.14
+local My_Version = 0.20
 local My_Host = "raw.github.com"
 local My_Path = "/fter44/ilikeman/master/"..SCRIPT_NAME..".lua"
 local AUTOUPDATE = true
@@ -84,6 +84,10 @@ function OnLoad()
 	--SKILLS
 	menu:addSubMenu("Q","Q")
 		menu.Q:addParam("ks","use Q for killsteal",SCRIPT_PARAM_ONOFF,true)		
+		menu.Q:addParam("farm","use Q for farm",SCRIPT_PARAM_ONOFF,true)		
+		menu.Q:addParam("harass","use Q for Harass",SCRIPT_PARAM_ONOFF,true)		
+		menu.Q:addParam("auto","Q Auto harass",SCRIPT_PARAM_ONOFF,true)
+		menu.Q:addParam("mana","Don't auto harass if mana < %", SCRIPT_PARAM_SLICE, 0, 0, 100)
 	menu:addSubMenu("W","W")
 		menu.W:addParam("before","cast before AA",SCRIPT_PARAM_ONOFF,true)
 			SOWi:RegisterBeforeAttackCallback(function(t)if t.type==myHero.type and menu.W.before and W:IsReady() then W:Cast() end end)
@@ -92,9 +96,14 @@ function OnLoad()
 		menu.W:addParam("auto","auto use for E stack",SCRIPT_PARAM_ONOFF,true)	
 	menu:addSubMenu("E","E")
 		menu.E:addParam("ks","use E for killsteal",SCRIPT_PARAM_ONOFF,true)
+		menu.E:addParam("farm","use E for farm",SCRIPT_PARAM_ONOFF,true)
+		menu.E:addParam("harass","use E for Harass",SCRIPT_PARAM_ONOFF,true)		
+		menu.E:addParam("auto","E Auto harass",SCRIPT_PARAM_ONOFF,true)
+		menu.E:addParam("mana","Don't auto harass if mana < %", SCRIPT_PARAM_SLICE, 0, 0, 100)		
 	menu:addSubMenu("R","R")
 		menu.R:addParam("cast","cast R to Target",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A"))
 		menu.R:addParam("ks","USE R KS",SCRIPT_PARAM_ONKEYTOGGLE,false,string.byte("T")) menu.R:permaShow("ks") menu.R.ks=false
+		menu.R:addParam("farm","use R for farm",SCRIPT_PARAM_ONOFF,false)
 		menu.R:addSubMenu("R buff time","rtime")
 			local RTIME=TEXTPOS_A(menu.R.rtime,"",12,_,_,true)
 			AdvancedCallback:bind("OnGainBuff",function(unit,buff)
@@ -180,6 +189,7 @@ function OnLoad()
 	menu:addParam("info", "--KASSADIN--by ilikeman", SCRIPT_PARAM_INFO, "") menu:permaShow("info")
 	menu:addParam("combo","combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)  menu:permaShow("combo")
 	menu:addParam("harass","harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('X')) menu:permaShow("harass")
+--	menu:addParam("farm","farm", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('V')) menu:permaShow("farm")
 	
 	
 	
@@ -194,6 +204,7 @@ function OnAbortRecall(hero)	if hero.isMe then	is_recalling=false end end
 function OnFinishRecall(hero)	if hero.isMe then	is_recalling=false end end
 local Target
 function OnTick2()
+	SOWi:EnableAttacks()
 	--SMAR KS
 	--KS
 	for _,c in pairs(GetEnemyHeroes()) do 
@@ -226,6 +237,7 @@ function OnTick2()
 
 	--COMBO
 	if menu.combo then
+		SOWi:DisableAttacks()
 		if (player:GetSpellData(_E).totalCooldown==0 and Estack>=4) then --not enough E stack
 			if Q:IsReady() and Q:IsInRange(Target) then
 				Q:Cast(Target)
@@ -241,11 +253,25 @@ function OnTick2()
 				Q:Cast(Target)
 			end
 		end
-		
+		if not Q:IsReady() and not E:IsReady() and (not R:IsReady() or menu.R.cast) then
+			SOWi:EnableAttacks()
+		end
 		return
 	end
-	--HARASS
-	--if menu.harss then
+	--HARASS TARGET
+	--if menu.harass then
+		--Harass with Q 
+		if (menu.Q.auto or menu.harass )and menu.Q.harass and Q:IsReady() and Q:IsInRange(Target)  then
+			Q:Cast(Target)
+		end
+		--And E
+		if (menu.E.auto or menu.harass )and menu.E.harass and E:IsReady() then
+			E:Cast(Target)
+		end
+	--end
+	--FARM
+	--if menu.farm then
+		
 	--end
 end
 
