@@ -197,3 +197,22 @@ function ITEM_MANAGER:CAST_OFFENSIVE_AP(unit,force)
 		end
 	end
 end
+
+
+local print_colors={
+	["CYAN"]="#67FECC",
+	["PURPLE"]="#9A68FD",
+	["RED"]="#9B0911",
+	["PINK"]="#FD68A6",
+	["BLACK"]="#000018",
+	["BLUE"]="#0000FF",
+	["WHITE"]="#FFFFFF",
+	["YELLOW"]="#FFFF00",
+}
+function Color_Print_I(title,color,msg)
+	print('<font color="'..print_colors[color]..'"><b>'..title..':</b></font><font color=\"#FFFFFF\">'..msg..".</font>")
+end
+function Color_Print_II(msg,color)
+	print('<font color="'..print_colors[color]..'"><b>'..msg..':</b></font>')
+end
+

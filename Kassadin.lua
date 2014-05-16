@@ -12,10 +12,10 @@ if myHero.charName ~= "Kassadin" then return end
 
 --Libraries
 local lib_infos={
-	"vPrediction" 		= "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua"
-	"SOW"		  		= "https://raw.github.com/honda7/BoL/master/Common/SOW.lua"
-	"ITEM_MANAGER"		= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/ITEM_MANAGER.lua"
-	"DRAW_POS_MANAGER"  = "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua"
+	["vPrediction" ]		= "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua",
+	["SOW"]	  				= "https://raw.github.com/honda7/BoL/master/Common/SOW.lua",
+	["ITEM_MANAGER"	]		= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/ITEM_MANAGER.lua",
+	["DRAW_POS_MANAGER"]  	= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua",
 }
 local SCRIPT_NAME = "Kassadin"
 local My_Version = 0.1 
@@ -35,7 +35,7 @@ end
 if DOWNLOADING_SOURCELIB then print("Downloading required libraries, please wait...") return end
 
 if AUTOUPDATE then
-	 SourceUpdater(SCRIPT_NAME, My_Version, My_Host, My_Path, SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/honda7/BoL/master/VersionFiles/"..SCRIPT_NAME..".version"):CheckUpdate()
+	 SourceUpdater(SCRIPT_NAME, My_Version, My_Host, My_Path, SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/fter44/ilikeman/master/VersionFiles/"..SCRIPT_NAME..".version"):CheckUpdate()
 end
 local RequireI = Require("SourceLib")
 
@@ -94,7 +94,7 @@ function OnLoad()
 		menu.E:addParam("ks","use E for killsteal",SCRIPT_PARAM_ONOFF,true)
 	menu:addSubMenu("R","R")
 		menu.R:addParam("cast","cast R to Target",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A"))
-		menu.R:addParam("ks","USE R KS",SCRIPT_PARAM_ONKEYTOGGLE,false) menu.R:permaShow("ks")
+		menu.R:addParam("ks","USE R KS",SCRIPT_PARAM_ONKEYTOGGLE,false,string.byte("T")) menu.R:permaShow("ks") menu.R.ks=false
 		menu.R:addSubMenu("R buff time","rtime")
 			local RTIME=TEXTPOS_A(menu.R.rtime,"",12,_,_,true)
 			AdvancedCallback:bind("OnGainBuff",function(unit,buff)
@@ -126,6 +126,19 @@ function OnLoad()
 					elseif buff.name=="forcepulsecancast" then
 						Ecast=false
 					end	
+				end
+			end)			
+		menu.R:addParam("disableKs","Auto Disable ^ after", SCRIPT_PARAM_SLICE, 60, 0, 120) local disableKs=false
+		menu.R:addParam("enableAutodisable","Enable ^ Auto Disable",SCRIPT_PARAM_ONOFF,true)
+			AddTickCallback(function()
+				if menu.R.ks and menu.R.enableAutodisable then
+					if not disableKs then
+						DelayAction(function() 
+							disableKs=false menu.R.ks=false	
+							print("R ks disabled Automatically")
+						end,menu.R.disableKs)
+						disableKs=true
+					end
 				end
 			end)
 	--INTERRUPTER
@@ -160,9 +173,10 @@ function OnLoad()
 		menu.Drawings:addSubMenu("KillTexts","KillTexts")
 			KILLTEXTS=TEXTPOS_HPBAR(menu.Drawings.KillTexts,18,0,30)
 	--KEY
-	menu:addParam("combo","combo", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))
-	menu:addParam("harass","harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('X'))
-	menu:addParam("info", "--KASSADIN--", SCRIPT_PARAM_INFO, "") menu:permaShow("info")
+	
+	menu:addParam("info", "--KASSADIN--by ilikeman", SCRIPT_PARAM_INFO, "") menu:permaShow("info")
+	menu:addParam("combo","combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)  menu:permaShow("combo")
+	menu:addParam("harass","harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('X')) menu:permaShow("harass")
 end
 
 
@@ -191,7 +205,7 @@ function OnTick()
 	
 	if is_recalling then return end
 	--USE W cuz its "no cost" to stack _E buff
-	if W:IsReady() and menu.W.auto and not Ecast and W:GetLevel()>0 then
+	if W:IsReady() and menu.W.auto and not Ecast and E:GetLevel()>0 then
 		W:Cast()
 	end
 	--SET TARGET	
@@ -303,13 +317,6 @@ function combinations(arr, r)
 		return return_table
 	end
 end
---[[
-	local Qd={DAMAGE=33,NAME="Q",Spell=1}
-	local Wd={DAMAGE=33,NAME="W",Spell=2}
-	local Ed={DAMAGE=44,NAME="E",Spell=3}
-	local Rd={DAMAGE=55,NAME="R",Spell=4}
-	ALL_COMBO({Qd,Wd,Ed,Rd},90)
-]]--
 
 function ALL_COMBO(array,health)
 	local max_damage=0
@@ -338,5 +345,6 @@ function ALL_COMBO(array,health)
 			end
 		end
 	end
-	return max_damage_str
+	return ""
+	--return max_damage_str
 end
