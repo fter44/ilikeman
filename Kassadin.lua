@@ -177,6 +177,11 @@ function OnLoad()
 	menu:addParam("info", "--KASSADIN--by ilikeman", SCRIPT_PARAM_INFO, "") menu:permaShow("info")
 	menu:addParam("combo","combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)  menu:permaShow("combo")
 	menu:addParam("harass","harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('X')) menu:permaShow("harass")
+	
+	
+	
+	AddTickCallback(OnTick2) AddTickCallback(KillDamage)
+	AddDrawCallback(OnDraw2)
 end
 
 
@@ -185,7 +190,7 @@ function OnRecall(hero)	if hero.isMe then	is_recalling=true end end
 function OnAbortRecall(hero)	if hero.isMe then	is_recalling=false end end
 function OnFinishRecall(hero)	if hero.isMe then	is_recalling=false end end
 local Target
-function OnTick()
+function OnTick2()
 	--SMAR KS
 	--KS
 	for _,c in pairs(GetEnemyHeroes()) do 
@@ -265,8 +270,8 @@ function KillDamage()
 		KILLTEXTS:SET_TEXT(enemy,killstr)
 		
 	end
-end AddTickCallback(KillDamage)
-function OnDraw()
+end 
+function OnDraw2()
 	--CURRENT TARGET
 	if ValidTarget(Target) then
 		DrawCircle3D(Target.x, Target.y, Target.z, 100, 2, ARGB(175, 0, 255, 0), 25)
