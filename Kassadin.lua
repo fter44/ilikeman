@@ -18,7 +18,7 @@ local lib_infos={
 	["DRAW_POS_MANAGER"]  	= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua",
 }
 local SCRIPT_NAME = "Kassadin"
-local My_Version = 0.11
+local My_Version = 0.12
 local My_Host = "raw.github.com"
 local My_Path = "/fter44/ilikeman/master/"..SCRIPT_NAME..".lua"
 local AUTOUPDATE = true
@@ -153,7 +153,8 @@ function OnLoad()
 		IM=ITEM_MANAGER(menu.Items,SOWi)
 	--DAMAGE
 	DLib = DamageLib()
-		local _P=_PASSIVE
+		local _PASSIVE = 10001
+		local _P=_PASSIVE 
 		local _T=_PASSIVE+2
 		local _MA=_MAXMANA
 		DLib:RegisterDamageSource(_P, _MAGIC,  0,  0, _MAGIC, _AP, 0.01)
