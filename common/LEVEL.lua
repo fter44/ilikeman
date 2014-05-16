@@ -18,7 +18,6 @@ function LEVEL:RegisterAtLevelUPCallback(level,fn)
 end
 function LEVEL:RegisterOnLevelUPCallback(fn)
 	table.insert(self.OnLevelUP, fn)
-	
 	return self
 end
 function LEVEL:OnTick()
