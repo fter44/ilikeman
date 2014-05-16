@@ -41,8 +41,8 @@ local RequireI = Require("SourceLib")
 
 for lib_name,lib_path in pairs(lib_infos) do
 	RequireI:Add(lib_name,lib_path)
+	RequireI:Check()
 end
-RequireI:Check()
 if RequireI.downloadNeeded == true then return end
 
 --Actual code starts
