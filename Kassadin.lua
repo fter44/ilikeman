@@ -18,7 +18,7 @@ local lib_infos={
 	["DRAW_POS_MANAGER"]  	= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua",
 }
 local SCRIPT_NAME = "Kassadin"
-local My_Version = 0.12
+local My_Version = 0.13
 local My_Host = "raw.github.com"
 local My_Path = "/fter44/ilikeman/master/"..SCRIPT_NAME..".lua"
 local AUTOUPDATE = true
@@ -139,6 +139,8 @@ function OnLoad()
 						end,menu.R.disableKs)
 						disableKs=true
 					end
+				elseif menu.R.ks==false then
+					disableKs=false
 				end
 			end)
 	--INTERRUPTER
