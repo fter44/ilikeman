@@ -18,7 +18,7 @@ local lib_infos={
 	["DRAW_POS_MANAGER"]  	= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua",
 }
 local SCRIPT_NAME = "Kassadin"
-local My_Version = 0.20
+local My_Version = 0.21
 local My_Host = "raw.github.com"
 local My_Path = "/fter44/ilikeman/master/"..SCRIPT_NAME..".lua"
 local AUTOUPDATE = true
@@ -242,7 +242,7 @@ function OnTick2()
 			if Q:IsReady() and Q:IsInRange(Target) then
 				Q:Cast(Target)
 			end
-			if W:IsReady() then
+			if W:IsReady() and not menu.W.auto then
 				W:Cast()
 			end
 		else		
