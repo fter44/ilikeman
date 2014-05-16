@@ -1,3 +1,31 @@
+local version = "0.1"
+local TESTVERSION = false
+local AUTOUPDATE = true
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/fter44/ilikeman/master/common/ITEM_MANAGER.lua".."?rand="..math.random(1,10000)
+local UPDATE_FILE_PATH = LIB_PATH.."ITEM_MANAGER.lua"
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+
+function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>ITEM_MANAGER:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+if AUTOUPDATE then
+	local ServerData = GetWebResult(UPDATE_HOST, "/fter44/ilikeman/master/VersionFiles/ITEM_MANAGER.version")
+	if ServerData then
+		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
+		if ServerVersion then
+			if tonumber(version) < ServerVersion then
+				AutoupdaterMsg("New version available"..ServerVersion)
+				AutoupdaterMsg("Updating, please don't press F9")
+				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
+			else
+				AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
+			end
+		end
+	else
+		AutoupdaterMsg("Error downloading version info")
+	end
+end
+
+
 --MANAGE BUY_ITEM,REMOVE_ITEM
 class "ITEM_MANAGER"--{
 local ITEM_MANAGER_OFFENSIVE_AD_TARGET = {
