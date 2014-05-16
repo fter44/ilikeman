@@ -1,11 +1,11 @@
---MANAGE BUY_ITEM,REMOVE_ITEM ~~~
+--MANAGE BUY_ITEM,REMOVE_ITEM
 class "ITEM_MANAGER"--{
 local ITEM_MANAGER_OFFENSIVE_AD_TARGET = {
 	--[1042]={name='Dagger'}, --test purpose
 	--[2003]={name='Health Potion'},--test purpose
 	[3153]={rangeSqr = 500*500, name="BRK[AD]"},--AD 몰왕검	
 	[3144]={rangeSqr = 450*450, name="BWC[AD]"},--AD 빌지워터	
-	[3146]={rangeSqr = 700*700, name="HXG[AD]"},--AP AD
+	--[3146]={rangeSqr = 700*700, name="HXG[AD]"},--AP AD
 	--[3184]={rangeSqr = 350*350, name="ENT[AD]"},--AD NOT SR
 }
 local ITEM_MANAGER_OFFENSIVE_AP_TARGET = {
@@ -48,10 +48,10 @@ function ITEM_MANAGER:LoadToMenu(menu,STS,disable)
 	menu:addSubMenu("OFFENSIVES","OFFENSIVES")
 	menu:addSubMenu("DEFENSIVES","DEVENSIVES")
 	menu:addParam("forceAO","FORCE ALL Offs",SCRIPT_PARAM_ONKEYTOGGLE, false, 48) menu:permaShow("forceAO")
-	menu:addParam("disableforceAO","Auto Disable ^ after seconds", SCRIPT_PARAM_SLICE, 60, 0, 120)
+	menu:addParam("disableforceAO","Auto Disable ^ after", SCRIPT_PARAM_SLICE, 60, 0, 120)
 	if not disable then
-		menu:addParam("castOffAD","CAST OFFENSIVE AD",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("C"))
-		menu:addParam("castOffAP","CAST OFFENSIVE AP",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("C"))
+		menu:addParam("castOffAD","CAST OFFENSIVE AD",SCRIPT_PARAM_ONKEYDOWN,false,32)
+		menu:addParam("castOffAP","CAST OFFENSIVE AP",SCRIPT_PARAM_ONKEYDOWN,false,32)
 	end
 	return self
 end
@@ -61,14 +61,16 @@ function ITEM_MANAGER:OnTick_CHECK() --CHECK BUY,REMOVE ITEMS  && Disable Auto D
 	
 	--AUTO DISABLE FORCE ALL OFFENSIVES after X seocnds
 	if self.menu.forceAO==true then
-		if self.forceAO then
-			if os.clock()-self.force_tick>self.menu.disableforceAO then
-				self.forceAO=false
-				self.menu.forceAO=false
-			end
-		else		
-			self.force_tick=os.clock()
+		if not self.forceAO then			
+			DelayAction(function() self.forceAO=false self.menu.forceAO=false	end,self.menu.disableforceAO)
 			self.forceAO=true
+			--self.force_tick=os.clock()
+			--self.forceAO=true
+		else		
+			--if os.clock()-self.force_tick>self.menu.disableforceAO then
+			--	self.forceAO=false
+			--	self.menu.forceAO=false
+			--end
 		end
 	end
 	
@@ -78,9 +80,9 @@ function ITEM_MANAGER:OnTick_CHECK() --CHECK BUY,REMOVE ITEMS  && Disable Auto D
 		if self.OFFENSIVE_AD_TARGET[id]==nil then --not yet have
 			if GetInventoryHaveItem(id) then  -- now have item
 				self.OFFENSIVE_AD_TARGET[id] = GetInventorySlotItem(id)				
-				--if self.menu.OFFENSIVES[tostring(id)]==nil then
-				self.menu.OFFENSIVES:addParam(tostring(id),info.name,SCRIPT_PARAM_ONOFF,true)					
-				--end
+				if self.menu.OFFENSIVES[tostring(id)]==nil then
+					self.menu.OFFENSIVES:addParam(tostring(id),info.name,SCRIPT_PARAM_ONOFF,true)					
+				end
 				Color_Print_I("ITEM_MANAGER","PINK",info.name.." added state:"..tostring(self.menu.OFFENSIVES[tostring(id)]))
 				
 			end
@@ -98,15 +100,17 @@ function ITEM_MANAGER:OnTick_CHECK() --CHECK BUY,REMOVE ITEMS  && Disable Auto D
 		if self.OFFENSIVE_AD_NONTARGET[id]==nil then --not yet have
 			if GetInventoryHaveItem(id) then -- now have item
 				self.OFFENSIVE_AD_NONTARGET[id]= GetInventorySlotItem(id)
-				Color_Print_I("ITEM_MANAGER","PINK",info.name.." added state:"..tostring(self.menu.OFFENSIVES[tostring(id)]))
 				if self.menu.OFFENSIVES[tostring(id)]==nil then
 					self.menu.OFFENSIVES:addParam(tostring(id),info.name,SCRIPT_PARAM_ONOFF,true)
-				end
+				end				
+				Color_Print_I("ITEM_MANAGER","PINK",info.name.." added state:"..tostring(self.menu.OFFENSIVES[tostring(id)]))
 			end 
 		else -- have before
-			if GetInventoryHaveItem(id) then -- now dont have item
+			if not GetInventoryHaveItem(id) then -- now dont have item
 				self.OFFENSIVE_AD_NONTARGET[id] = nil				
-				Color_Print_I("ITEM_MANAGER","PINK",info.name.." removed")
+				Color_Print_I("ITEM_MANAGER","PINK",info.name.." removed")				
+				
+				self.menu.OFFENSIVES:removeParam(tostring(id))
 			end 
 		end
 	end
@@ -115,15 +119,17 @@ function ITEM_MANAGER:OnTick_CHECK() --CHECK BUY,REMOVE ITEMS  && Disable Auto D
 		if self.OFFENSIVE_AP_TARGET[id]==nil then --not yet have
 			if GetInventoryHaveItem(id) then-- now have item
 				self.OFFENSIVE_AP_TARGET[id] = GetInventorySlotItem(id)
-				Color_Print_I("ITEM_MANAGER","PINK",info.name.." added state:"..tostring(self.menu.OFFENSIVES[tostring(id)]))
 				if self.menu.OFFENSIVES[tostring(id)]==nil then
 					self.menu.OFFENSIVES:addParam(tostring(id),info.name,SCRIPT_PARAM_ONOFF,true)
-				end
+				end				
+				Color_Print_I("ITEM_MANAGER","PINK",info.name.." added state:"..tostring(self.menu.OFFENSIVES[tostring(id)]))
 			end 
 		else -- have before
-			if GetInventoryHaveItem(id) then -- now dont have item
+			if not GetInventoryHaveItem(id) then -- now dont have item
 				self.OFFENSIVE_AP_TARGET[id] = nil 
 				Color_Print_I("ITEM_MANAGER","PINK",info.name.." removed")
+				
+				self.menu.OFFENSIVES:removeParam(tostring(id))
 			end 
 		end
 	end
