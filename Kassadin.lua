@@ -18,7 +18,7 @@ local lib_infos={
 	["DRAW_POS_MANAGER"]  	= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua",
 }
 local SCRIPT_NAME = "Kassadin"
-local My_Version = 0.22
+local My_Version = 0.23
 local My_Host = "raw.github.com"
 local My_Path = "/fter44/ilikeman/master/"..SCRIPT_NAME..".lua"
 local AUTOUPDATE = true
@@ -262,11 +262,11 @@ function OnTick2()
 	--if menu.harass then
 		--Harass with Q  
 		
-		if (menu.Q.auto or menu.harass )and menu.Q.harass and Q:IsReady() and Q:IsInRange(Target) and (menu.Q.mana) > (myHero.mana / myHero.maxMana) * 100  then
+		if (menu.Q.auto or menu.harass )and menu.Q.harass and Q:IsReady() and Q:IsInRange(Target) and (menu.Q.mana) < (myHero.mana / myHero.maxMana) * 100  then
 			Q:Cast(Target)
 		end
 		--And E
-		if (menu.E.auto or menu.harass )and menu.E.harass and E:IsReady()  and (menu.E.mana) > (myHero.mana / myHero.maxMana) * 100  then
+		if (menu.E.auto or menu.harass )and menu.E.harass and E:IsReady()  and (menu.E.mana) < (myHero.mana / myHero.maxMana) * 100  then
 			E:Cast(Target)
 		end
 	--end
