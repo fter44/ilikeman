@@ -1,9 +1,9 @@
 if myHero.charName ~= "Draven" then return end
 
-local version = "0.10"
+local version = "0.12"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/fter44/ilikeman/master/Draven.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = LIB_PATH.."Draven.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
@@ -33,6 +33,9 @@ require 'VPrediction'
 require 'SOW'
 require "SourceLib"
 require "Prodiction"
+require "DRAW_POS_MANAGER"
+require "ITEM_MANAGER"
+
 
 --[[Menu instance]]--
 local menu
@@ -50,6 +53,9 @@ local W_AS_BUFF_NAME="dravenfurybuff"
 local W_MS_BUFF=false
 local W_MS_BUFF_NAME="DravenFury"
 local R_BUFF_NAME="dravenrdoublecast"
+
+--[[Kill Str Manager]]--
+local KILLTEXTS
 function OnGainBuff(unit,buff)
 	if unit.isMe then
 		--print("GAIN "..buff.name)
@@ -167,8 +173,9 @@ function Load_Menu()
 		DManager:CreateCircle(myHero, SPELL_DATA[_E ].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"E range", true, true, true)		
 		menu.Drawings:addParam("Reticle", "Highlight Reticle", SCRIPT_PARAM_ONOFF, true)
 		menu.Drawings:addParam("CatchRadius", "Draw Catch Radius(Mouse)", SCRIPT_PARAM_ONOFF, true)
-		menu.Drawings:addParam("OrbWalkPos", "Highlight Orbwalk Position", SCRIPT_PARAM_ONOFF, true)
-		
+		menu.Drawings:addParam("OrbWalkPos", "Highlight Orbwalk Position", SCRIPT_PARAM_ONOFF, true)		
+		menu.Drawings:addSubMenu("KillTexts","KillTexts")
+			KILLTEXTS=TEXTPOS_HPBAR(menu.Drawings.KillTexts,23,46,30)	
 	--EXTRA
 	menu:addSubMenu("Extra menu", "Extras")
 		menu.Extras:addParam("Debug", "Debug", SCRIPT_PARAM_ONOFF, false)				
@@ -272,6 +279,7 @@ function OrbWalk2Q_Reticle(force,useW)--consider current speed if not force-d
 end
 
 function OnTick2()
+	KD()
 	--KS		
 	for _, enemy in pairs(GetEnemyHeroes()) do
 		if ValidTarget(enemy) then		
@@ -429,4 +437,40 @@ function PrintAlert_T(target,text,duration,r,g,b)
 	end	
 	
 	Alert_Texts[target]=os.clock()+10
+end
+
+
+--[[
+██╗  ██╗    ██╗    ██╗         ██╗     
+██║ ██╔╝    ██║    ██║         ██║     
+█████╔╝     ██║    ██║         ██║     
+██╔═██╗     ██║    ██║         ██║     
+██║  ██╗    ██║    ███████╗    ███████╗
+╚═╝  ╚═╝    ╚═╝    ╚══════╝    ╚══════╝
+                                       
+--]]
+do
+local KD_nexttick=0
+function KD()
+	if os.clock() < KD_nexttick then return end
+	KD_nexttick = os.clock()+0.2
+	
+	for _,enemy in pairs(GetEnemyHeroes()) do
+		if not ValidTarget(enemy) then return end
+		local AA 	= getDmg("AD",enemy,myHero) --critChance
+		local Ed 	= E:IsReady() and getDmg("E",enemy,myHero)
+		local HP 	= enemy.health - ( Ed and Ed or 0 )
+		
+		local hit = math.ceil( HP/AA)
+		local hit_T = math.ceil( hit/myHero.attackSpeed )
+		local str=""
+		
+		if menu.Drawings.KillTexts.hit then
+			str=str..hit.." Hit\n"
+		end
+		if menu.Drawings.KillTexts.time then
+			str=str..hit_T.." Sec\n"
+		end
+		KILLTEXTS:SET_TEXT(enemy,str)		
+	end
 end
