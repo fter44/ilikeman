@@ -1,4 +1,7 @@
-local version = "0.10"
+if myHero.charName ~= "Riven" then return end
+
+
+local version = "0.11"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Riven.lua".."?rand="..math.random(1,10000)
