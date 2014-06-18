@@ -192,7 +192,7 @@ function OnTick2()
 	--KS		
 	for _, enemy in pairs(GetEnemyHeroes()) do
 		if ValidTarget(enemy) then		
-			if menu.Q.ks and Q:IsReady() and getDmg("Q", enemy, myHero) > enemy.health and CAST_Q(enemy) then
+			if menu.Q.ks and Q1:IsReady() and getDmg("Q", enemy, myHero) > enemy.health and CAST_Q(enemy) then
 				goto continue
 			elseif  menu.W.ks and W:IsReady() and getDmg("W", enemy, myHero) > enemy.health and W:IsInRangeAdv(enemy) then
 				W:Cast(enemy)
