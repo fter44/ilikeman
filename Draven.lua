@@ -1,6 +1,6 @@
 if myHero.charName ~= "Draven" then return end
 
-local version = "0.12"
+local version = "0.13"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
@@ -458,8 +458,7 @@ function KD()
 	for _,enemy in pairs(GetEnemyHeroes()) do
 		if not ValidTarget(enemy) then return end
 		local AA 	= getDmg("AD",enemy,myHero) --critChance
-		local Ed 	= E:IsReady() and getDmg("E",enemy,myHero)
-		local HP 	= enemy.health - ( Ed and Ed or 0 )
+		local HP 	= enemy.health
 		
 		local hit = math.ceil( HP/AA)
 		local hit_T = math.ceil( hit/myHero.attackSpeed )
@@ -473,4 +472,5 @@ function KD()
 		end
 		KILLTEXTS:SET_TEXT(enemy,str)		
 	end
+end
 end
