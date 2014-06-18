@@ -1,6 +1,6 @@
 if myHero.charName ~= "Draven" then return end
 
-local version = "0.13"
+local version = "0.14"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
@@ -456,21 +456,22 @@ function KD()
 	KD_nexttick = os.clock()+0.2
 	
 	for _,enemy in pairs(GetEnemyHeroes()) do
-		if not ValidTarget(enemy) then return end
-		local AA 	= getDmg("AD",enemy,myHero) --critChance
-		local HP 	= enemy.health
-		
-		local hit = math.ceil( HP/AA)
-		local hit_T = math.ceil( hit/myHero.attackSpeed )
-		local str=""
-		
-		if menu.Drawings.KillTexts.hit then
-			str=str..hit.." Hit\n"
+		if ValidTarget(enemy) then
+			local AA 	= getDmg("AD",enemy,myHero) --critChance
+			local HP 	= enemy.health
+			
+			local hit = math.ceil( HP/AA)
+			local hit_T = math.ceil( hit/myHero.attackSpeed )
+			local str=""
+			
+			if menu.Drawings.KillTexts.hit then
+				str=str..hit.." Hit\n"
+			end
+			if menu.Drawings.KillTexts.time then
+				str=str..hit_T.." Sec\n"
+			end
+			KILLTEXTS:SET_TEXT(enemy,str)		
 		end
-		if menu.Drawings.KillTexts.time then
-			str=str..hit_T.." Sec\n"
-		end
-		KILLTEXTS:SET_TEXT(enemy,str)		
 	end
 end
 end
