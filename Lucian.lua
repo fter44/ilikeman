@@ -157,6 +157,9 @@ function Menu()
 		DManager:CreateCircle(myHero, SPELL_DATA[_R ].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"R range", true, true, true)			
 		menu.Drawings:addSubMenu("KillTexts","KillTexts")
 			KILLTEXTS=TEXTPOS_HPBAR(menu.Drawings.KillTexts,23,46,30)	
+			menu.Drawings.KillTexts:addParam("hit","hit",SCRIPT_PARAM_ONOFF,true)
+			menu.Drawings.KillTexts:addParam("time","time",SCRIPT_PARAM_ONOFF,true)
+			
 	--KEYS	
 	menu:addParam("Combo", "Combo", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))
 	menu:addParam("Harass", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('X'))
@@ -481,21 +484,22 @@ function KD()
 	KD_nexttick = os.clock()+0.2
 	
 	for _,enemy in pairs(GetEnemyHeroes()) do
-		if not ValidTarget(enemy) then return end
-		local AA 	= getDmg("AD",enemy,myHero) --critChance
-		local HP 	= enemy.health
-		
-		local hit = math.ceil( HP/AA)
-		local hit_T = math.ceil( hit/myHero.attackSpeed )
-		local str=""
-		
-		if menu.Drawings.KillTexts.hit then
-			str=str..hit.." Hit\n"
+		if ValidTarget(enemy) then 
+			local AA 	= getDmg("AD",enemy,myHero) --critChance
+			local HP 	= enemy.health
+			
+			local hit = math.ceil( HP/AA)
+			local hit_T = math.ceil( hit/myHero.attackSpeed )
+			local str=""
+			
+			if menu.Drawings.KillTexts.hit then
+				str=str..hit.." Hit\n"
+			end
+			if menu.Drawings.KillTexts.time then
+				str=str..hit_T.." Sec\n"
+			end
+			KILLTEXTS:SET_TEXT(enemy,str)		
 		end
-		if menu.Drawings.KillTexts.time then
-			str=str..hit_T.." Sec\n"
-		end
-		KILLTEXTS:SET_TEXT(enemy,str)		
 	end
 end
 end
