@@ -3,7 +3,7 @@ if myHero.charName ~= "Draven" then return end
 local version = "0.10"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/fter44/ilikeman/master/Draven.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = LIB_PATH.."Draven.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
