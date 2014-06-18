@@ -1,4 +1,4 @@
-local version = "0.20"
+local version = "0.21"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/ITEM_MANAGER.lua".."?rand="..math.random(1,10000)
@@ -24,6 +24,7 @@ if AUTOUPDATE then
 	end
 end
 
+require "AllClass"
 
 local print_colors={
 	["CYAN"]="#67FECC",
