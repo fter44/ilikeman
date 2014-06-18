@@ -1,0 +1,497 @@
+if myHero.charName ~= "Diana" then return end
+
+
+local version = "0.10"
+local AUTOUPDATE = true
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/fter44/ilikeman/master/common/Diana.lua".."?rand="..math.random(1,10000)
+local UPDATE_FILE_PATH = LIB_PATH.."Diana.lua"
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+
+function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Diana:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+if AUTOUPDATE then
+	local ServerData = GetWebResult(UPDATE_HOST, "/fter44/ilikeman/master/VersionFiles/Diana.version".."?rand="..math.random(1,10000))
+	if ServerData then
+		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
+		if ServerVersion then
+			if tonumber(version) < ServerVersion then
+				AutoupdaterMsg("New version available"..ServerVersion)
+				AutoupdaterMsg("Updating, please don't press F9")
+				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
+			else
+				AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
+			end
+		end
+	else
+		AutoupdaterMsg("Error downloading version info")
+	end
+end
+
+
+require "Prodiction" 
+require "VPrediction"
+require 'SOW'
+require "SourceLib"
+require "DRAW_POS_MANAGER"
+require "ITEM_MANAGER"
+--[[Menu instance]]--
+local menu
+--[[Libaries]]--
+local VP,SOWi,STS
+--[[MAIN TARGET]]--
+local Target
+local Target_Circle
+--[[Spells]]--
+local Q,W,E,R
+--[[PASSIVE]]--
+local P_ON=false
+local Q_ON_Targets={
+}
+--[[SPELL]]--
+local Q,W,E,R
+--[[EVLOUTION]]--
+local Qe,We,Ee,Re=false,false,false,false
+--[[SPELL DATA]]--
+local SPELL_DATA = { [_Q ] = { skillshotType = SKILLSHOT_CIRCULAR,	range = 0830, speed = 1700, width = 0200, delay=0.50},
+					 [_W ] = { range = 0200},
+					 [_E ] = { range = 0420},
+					 [_R ] = { range = 0825},--0825 --760
+}
+--[[Kill Str Manager]]--
+local KILLTEXTS
+--[[
+██╗    ███╗   ██╗    ██╗    ████████╗
+██║    ████╗  ██║    ██║    ╚══██╔══╝
+██║    ██╔██╗ ██║    ██║       ██║   
+██║    ██║╚██╗██║    ██║       ██║   
+██║    ██║ ╚████║    ██║       ██║   
+╚═╝    ╚═╝  ╚═══╝    ╚═╝       ╚═╝   
+                                     
+--]]
+function Load_Menu()
+	menu = scriptConfig("Diana", "Diana")
+	
+	--SPELLS
+	menu:addSubMenu("Q", "Q")	
+		menu.Q:addParam("ks", "KS Q", SCRIPT_PARAM_ONOFF, true)
+		menu.Q:addParam("combo", "Q@Combo", SCRIPT_PARAM_ONOFF, true)
+		menu.Q:addParam("harass", "Q@harass", SCRIPT_PARAM_ONOFF, true)
+		menu.Q:addParam("farm", "Q@farm", SCRIPT_PARAM_ONOFF, true)
+		menu.Q:addParam("laneclear", "Q@laneclear", SCRIPT_PARAM_ONOFF, true)
+		menu.Q:addParam("jungle", "Q@jungle", SCRIPT_PARAM_ONOFF, true)
+	menu:addSubMenu("W", "W") 
+		menu.W:addParam("ks", "KS W", SCRIPT_PARAM_ONOFF, true)
+		menu.W:addParam("combo", "W@Combo", SCRIPT_PARAM_ONOFF, true)
+		menu.W:addParam("harass", "W@harass", SCRIPT_PARAM_ONOFF, true)
+		menu.W:addParam("farm", "W@farm", SCRIPT_PARAM_ONOFF, true)
+		menu.W:addParam("laneclear", "W@laneclear", SCRIPT_PARAM_ONOFF, true)
+		menu.W:addParam("jungle", "W@jungle", SCRIPT_PARAM_ONOFF, true) 
+	menu:addSubMenu("E", "E")				
+		menu.E:addParam("combo", "E@Combo", SCRIPT_PARAM_ONOFF, true)
+		menu.E:addParam("harass", "E@harass", SCRIPT_PARAM_ONOFF, true)
+		menu.E:addParam("interrupt", "Auto E Interrupt", SCRIPT_PARAM_ONOFF, true)
+	menu:addSubMenu("R", "R")
+		menu.R:addParam("ks", "KS R", SCRIPT_PARAM_ONOFF, true)
+		menu.R:addParam("ksQ", "check Q buff@ks", SCRIPT_PARAM_ONOFF, false)  
+		menu.R:addParam("combo", "R@Combo", SCRIPT_PARAM_ONOFF, true) 
+		menu.R:addParam("comboQ", "check Q buff@combo", SCRIPT_PARAM_ONOFF, true)  
+		menu.R:addParam("harass", "R@harass", SCRIPT_PARAM_ONOFF, true)
+		menu.R:addParam("harassQ", "check Q buff@harass", SCRIPT_PARAM_ONOFF, true)  
+		menu.R:addParam("farm", "R@farm", SCRIPT_PARAM_ONOFF, true)
+		menu.R:addParam("laneclear", "R@laneclear", SCRIPT_PARAM_ONOFF, true)
+		menu.R:addParam("jungle", "R@jungle", SCRIPT_PARAM_ONOFF, true)  
+		menu.R:addParam("cast", "Manual Cast",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A"))
+	--OW
+	menu:addSubMenu("Orbwalker", "SOW")
+		SOWi:LoadToMenu(menu.SOW)	
+	--TS
+	menu:addSubMenu("Target selector", "STS")
+		STS:AddToMenu(menu.STS)	 		
+	--ITEMS
+	menu:addSubMenu("Items","Items")
+		IM=ITEM_MANAGER(menu.Items,STS)
+	--INTERRUPTER
+	menu:addSubMenu("Interrupter","Interrupter")
+		Interrupter(menu.Interrupter,function(unit,data)
+			if menu.E.interrupt and E:IsReady() and E:IsInRange(unit) then
+				E:Cast(unit)
+			end
+		end)
+	--DRAWING
+	menu:addSubMenu("Drawings", "Drawings")
+		local DManager = DrawManager()
+		DManager:CreateCircle(myHero, SPELL_DATA[_Q ].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"Q range", true, true, true)		
+		DManager:CreateCircle(myHero, SPELL_DATA[_W ].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"W range", true, true, true)		
+		DManager:CreateCircle(myHero, SPELL_DATA[_E ].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"E range", true, true, true)		
+		DManager:CreateCircle(myHero, SPELL_DATA[_R ].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"R range", true, true, true)	 
+		menu.Drawings:addSubMenu("KillTexts","KillTexts")
+			KILLTEXTS=TEXTPOS_HPBAR(menu.Drawings.KillTexts,18,0,30)	
+		Target_Circle=_Circle(myHero,200):AddToMenu(menu.Drawings, "Target Circle", true, true, true)
+	--EXTRA
+	menu:addSubMenu("Extra menu", "Extras")
+		menu.Extras:addParam("Debug", "Debug", SCRIPT_PARAM_ONOFF, false)				
+	--KEY
+	menu:addParam("combo", "combo", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))		menu:permaShow("combo")
+	menu:addParam("harass", "harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('X')) 		menu:permaShow("harass")
+	menu:addParam("farm", "farm", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('Z'))			menu:permaShow("farm")
+	menu:addParam("laneclear", "laneclear", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('V'))menu:permaShow("laneclear")
+	menu:addParam("jungle", "jungle", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('V'))		menu:permaShow("jungle")
+	
+	
+	return true
+end
+function SetLibrary()	
+	VP = VPrediction()	SOWi = SOW(VP)	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC) 
+	
+	function SOW:BonusDamage(minion)
+		local damage={20 , 25 , 30 , 35 , 40 , 50 , 60 , 70 , 80 , 90 , 105 , 120 , 135 , 155 , 175 , 200 , 225 , 250}-- (+ 80% AP)
+		if P_ON then
+			return damage[myHero.level]+0.8*myHero.ap
+		end
+		return 0
+	end	
+	Spell.VP=VP
+	function Spell:IsInRangeAdv(target, from) 		
+		return (self.range+self.VP:GetHitBox(target))^2 >= GetDistanceSqr(target, from or self.sourcePosition)
+	end
+	
+	--Q
+		Q=Spell(_Q,SPELL_DATA[_Q].range)
+			Q:SetSkillshot(VP, SPELL_DATA[_Q].skillshotType, SPELL_DATA[_Q].width, SPELL_DATA[_Q].delay, SPELL_DATA[_Q].speed, SPELL_DATA[_Q].collision)
+	--W
+		W=Spell(_W,SPELL_DATA[_W].range)	
+	--E
+		E=Spell(_E,SPELL_DATA[_E].range)
+	--R
+		R=Spell(_R,SPELL_DATA[_R].range)
+	--P	
+		if TargetHaveBuff("dianaarcready",myHero) then
+			P_ON=true
+		end
+	
+	return true
+end
+function OnLoad()
+	if SetLibrary() and	Load_Menu() then	
+		AddTickCallback(OnTick2)
+		AddDrawCallback(OnDraw2)
+		Print("DIANA Loaded")
+	end
+end
+
+function OnTick2()
+	KD()
+	KS() 
+
+	
+	if menu.farm then
+		FARM()
+	end
+	
+	if menu.laneclear then
+		LANECLEAR()
+	end
+	
+	if menu.jungle then
+		JUNGLE()
+	end
+	
+
+	Target = STS:GetTarget(SPELL_DATA[_R].range) or STS:GetTarget(SPELL_DATA[_Q].range) or STS:GetTarget(SPELL_DATA[_E].range)
+	if not Target or not ValidTarget(Target) then return end 
+	
+	if R:IsReady() then
+		CAST_R(Target)
+	end
+	
+	if menu.combo then		
+		if Q:IsReady() and menu.Q.combo then
+			CAST_Q(Target)
+		end
+		if W:IsReady() and menu.W.combo then
+			CAST_W(Target)
+		end
+		if E:IsReady() and menu.E.combo then
+			CAST_E(Target)
+		end
+		if R:IsReady() and (menu.R.combo or menu.R.cast) then
+			CAST_R(Target,not menu.R.comboQ)
+		end
+		
+		return
+	end
+	if menu.harass then 
+		
+		if Q:IsReady() and menu.Q.harass then
+			CAST_Q(Target)
+		end
+		if W:IsReady() and menu.W.harass then
+			CAST_W(Target)
+		end
+		if E:IsReady() and menu.E.harass then
+			CAST_E(Target)
+		end		
+		if R:IsReady() and (menu.R.combo or menu.R.cast) then
+			CAST_R(Target,not menu.R.harassQ)
+		end
+		
+		return 
+	end
+end
+--[[
+██████╗     ██████╗      █████╗         ██╗    ██╗
+██╔══██╗    ██╔══██╗    ██╔══██╗        ██║    ██║
+██║  ██║    ██████╔╝    ███████║        ██║ █╗ ██║
+██║  ██║    ██╔══██╗    ██╔══██║        ██║███╗██║
+██████╔╝    ██║  ██║    ██║  ██║        ╚███╔███╔╝
+╚═════╝     ╚═╝  ╚═╝    ╚═╝  ╚═╝         ╚══╝╚══╝ 
+                                                  
+--]]
+function OnDraw2()
+	if ValidTarget(Target) then
+		Target_Circle.position=Target
+		Target_Circle:Draw()
+	end
+	
+	if menu.Extras.Debug then
+		local str='P_ON ' .. tostring(P_ON).."\n"
+		DrawText(str, 25, 350, 350, ARGB(255,0,255,0))
+	end
+end
+--[[
+ ▄████▄      ▄▄▄           ██████    ▄▄▄█████▓
+▒██▀ ▀█     ▒████▄       ▒██    ▒    ▓  ██▒ ▓▒
+▒▓█    ▄    ▒██  ▀█▄     ░ ▓██▄      ▒ ▓██░ ▒░
+▒▓▓▄ ▄██▒   ░██▄▄▄▄██      ▒   ██▒   ░ ▓██▓ ░ 
+▒ ▓███▀ ░    ▓█   ▓██▒   ▒██████▒▒     ▒██▒ ░ 
+░ ░▒ ▒  ░    ▒▒   ▓▒█░   ▒ ▒▓▒ ▒ ░     ▒ ░░   
+  ░  ▒        ▒   ▒▒ ░   ░ ░▒  ░ ░       ░    
+░             ░   ▒      ░  ░  ░       ░      
+░ ░               ░  ░         ░              
+░                                             
+--]] 
+do
+function CAST_Q(target)	
+	return Q:Cast(target)==SPELLSTATE_TRIGGERED
+end
+function CAST_W(target)	
+	if W:IsInRangeAdv(target) then
+		return W:Cast(target)==SPELLSTATE_TRIGGERED
+	end
+end
+function CAST_E(target,force)
+	if (force or IsEnemyFlee(target)) and W:IsInRangeAdv(target) then
+		return E:Cast(target)==SPELLSTATE_TRIGGERED
+	end
+end
+function CAST_R(target,force) 
+	if (force or IsMoonLighted(target)) and R:IsInRangeAdv(target) then
+		return R:Cast(target)==SPELLSTATE_TRIGGERED
+	end
+end 
+end
+--[[
+██╗  ██╗    ██╗    ██╗         ██╗     
+██║ ██╔╝    ██║    ██║         ██║     
+█████╔╝     ██║    ██║         ██║     
+██╔═██╗     ██║    ██║         ██║     
+██║  ██╗    ██║    ███████╗    ███████╗
+╚═╝  ╚═╝    ╚═╝    ╚══════╝    ╚══════╝
+                                       
+--]]
+do
+local KD_nexttick=0
+function KD()
+	if os.clock() < KD_nexttick then return end
+	KD_nexttick = os.clock()+0.2
+	
+	for _,enemy in pairs(GetEnemyHeroes()) do
+		if ValidTarget(enemy) then 
+			local Pd	= getDmg("P", enemy, myHero)
+			local Qd 	= Q:IsReady() and getDmg("Q",enemy,myHero)
+			local Wd 	= W:IsReady() and getDmg("W",enemy,myHero)
+			local Rd    = R:IsReady() and getDmg("R",enemy,myHero)
+			local HP 	= enemy.health-Pd
+			if Qd and HP <= Qd then
+				KILLTEXTS:SET_TEXT(enemy,"Q KILL")
+			elseif Wd and HP <= Wd+Wd+Wd then
+				KILLTEXTS:SET_TEXT(enemy,"3W KILL")
+			elseif (Qd and Wd) and HP <= Qd+Wd+Wd+Wd then
+				KILLTEXTS:SET_TEXT(enemy,"Q+3W KILL")
+			elseif (Qd and Rd) and HP <= Qd+Rd then
+				KILLTEXTS:SET_TEXT(enemy,"Q+R KILL")
+			elseif (Qd and Rd) and HP <= Qd+Rd+Rd then
+				KILLTEXTS:SET_TEXT(enemy,"Q+2R KILL")
+			elseif (Qd and Wd and Rd) and HP <= Qd+Wd+Rd then
+				KILLTEXTS:SET_TEXT(enemy,"Q+W+R KILL")
+			elseif (Qd and Wd and Rd) and HP <= Qd+Rd+Rd+Qd then
+				KILLTEXTS:SET_TEXT(enemy,"2Q+2R KILL")
+			elseif (Qd and Wd and Rd) and HP <= Qd+Qd+Wd+Rd+Rd then
+				KILLTEXTS:SET_TEXT(enemy,"2Q+2R+3W KILL")
+			else
+				local totaldmg = (Qd and Qd or 0)+(Wd and Wd or 0)+(Rd and Rd or 0)
+				local remain=HP-totaldmg
+				KILLTEXTS:SET_TEXT(enemy,string.format("%d",remain))
+			end
+		end
+	end
+end
+local KS_nexttick=0
+function KS() 	
+	--if os.clock() < KS_nexttick then return end
+	--KS_nexttick = os.clock()+0.2 
+
+	for _, enemy in pairs(GetEnemyHeroes()) do
+		if ValidTarget(enemy) then
+			local Pd 	 = P_ON and getDmg("P",enemy,myHero)
+			local Qd 	 =(Q:IsReady() and menu.Q.ks ) and getDmg("Q",enemy,myHero)
+			local Wd 	 =(W:IsReady() and menu.W.ks ) and getDmg("W",enemy,myHero) --1 orb
+			local Rd     =(R:IsReady() and (menu.R.ks or menu.R.cast) ) and getDmg("R",enemy,myHero)
+			local HP 	 = enemy.health
+			--[[
+			lib.print("----------")
+			lib.print(enemy.charName) 
+			lib.print("Qd : "..tostring(Qd))
+			lib.print("Wd : "..tostring(Wd))
+			lib.print("Ed : "..tostring(Ed))
+			lib.print("Rd : "..tostring(Rd))
+			lib.print("----------")
+			--]]
+			if (Qd) and HP <= Qd and CAST_Q(enemy) then
+				--lib.print("#1")
+				goto continue
+			elseif (Wd) and HP <= Wd and CAST_W(enemy) then
+				--lib.print("#2")
+				goto continue
+			elseif (Rd) and HP <= Rd and CAST_R(enemy,not menu.R.ksQ) then
+				--lib.print("#3")
+				goto continue
+			elseif (Qd and Wd) and HP <= Qd+Wd and CAST_W(enemy,true) then 
+				--lib.print("#4")
+				goto continue
+			elseif (Wd and Rd) and HP <= Wd+Rd and CAST_R(enemy,not menu.R.ksQ) then 
+				--lib.print("#5")
+				goto continue
+			elseif (Qd and Rd) and HP <= Qd+Rd+Rd and CAST_R(enemy,not menu.R.ksQ) then 
+				--lib.print("#6")
+				CAST_Q(enemy)
+				goto continue
+			elseif (Qd and Wd and Rd) and HP<=Qd+Rd+Rd+Wd+Wd+Wd and CAST_R(enemy,not menu.R.ksQ) then 
+				--lib.print("#7")
+				CAST_Q(enemy)
+				CAST_W(enemy)
+			end
+			::continue::
+		end
+	end 
+end 
+end
+--[[
+██████╗     ██╗   ██╗    ███████╗    ███████╗
+██╔══██╗    ██║   ██║    ██╔════╝    ██╔════╝
+██████╔╝    ██║   ██║    █████╗      █████╗  
+██╔══██╗    ██║   ██║    ██╔══╝      ██╔══╝  
+██████╔╝    ╚██████╔╝    ██║         ██║     
+╚═════╝      ╚═════╝     ╚═╝         ╚═╝     
+                                             
+--]]
+do 
+local P_BUFF_NAME="dianaarcready"
+local Q_BUFF_NAME="dianamoonlight"
+function OnGainBuff(unit, buff)
+	if unit.isMe and buff.name == P_BUFF_NAME then 
+		P_ON = true
+		return
+	end
+	if buff.name == Q_BUFF_NAME then
+		Q_ON_Targets[unit.networkID]=true
+	end
+end
+function OnLoseBuff(unit, buff)
+	if unit.isMe and buff.name == P_BUFF_NAME then
+		P_ON = false
+	end	
+	if buff.name == Q_BUFF_NAME then
+		Q_ON_Targets[unit.networkID]=false
+	end
+end
+function IsMoonLighted(target)
+	return Q_ON_Targets[target.networkID]
+	--return HasBuff(target, Q_BUFF_NAME)
+end
+local Q_NAME="DianaArc"
+local R_NAME="DianaTeleport"
+function OnProcessSpell(unit,spell)
+	if unit.isMe then
+		if spell.name==Q_NAME then
+		end
+	end
+end
+end
+--[[
+███╗   ███╗    ██╗    ███████╗     ██████╗
+████╗ ████║    ██║    ██╔════╝    ██╔════╝
+██╔████╔██║    ██║    ███████╗    ██║     
+██║╚██╔╝██║    ██║    ╚════██║    ██║     
+██║ ╚═╝ ██║    ██║    ███████║    ╚██████╗
+╚═╝     ╚═╝    ╚═╝    ╚══════╝     ╚═════╝                                          
+--]]
+do
+function Print(str)	print("<font color=\"#6699ff\"><b>FTER44:</b></font> <font color=\"#FFFFFF\">"..str..".</font>") end
+
+
+function FARM()
+	SOWi.EnemyMinions:update()
+	for _, minion in ipairs(SOWi.EnemyMinions.objects) do	
+		local time = SOWi:WindUpTime(true) + GetDistance(minion.visionPos, myHero.visionPos) / SOWi.ProjectileSpeed - 0.07
+		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		if SOWi:ValidTarget(minion) and SOWi:GetState()==0 and not( PredictedHealth < VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + SOWi:BonusDamage(minion) and SOWi:CanAttack()==true ) and ( 
+			( Q:IsReady() and getDmg("Q",minion,myHero)>=minion.health and menu.Q.farm and CAST_Q(minion) ) or ( W:IsReady() and getDmg("W",minion,myHero)>=minion.health and menu.W.farm and CAST_W(minion) )
+			or ( R:IsReady() and getDmg("R",minion,myHero)>=minion.health and (menu.R.farm or menu.R.cast) and CAST_R(minion) ) )
+			then
+			break
+		end
+	end
+end
+function LANECLEAR()
+	SOWi.EnemyMinions:update()
+	for _, minion in ipairs(SOWi.EnemyMinions.objects) do	
+		local time = SOWi:WindUpTime(true) + GetDistance(minion.visionPos, myHero.visionPos) / SOWi.ProjectileSpeed - 0.07
+		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		if not( SOWi:ValidTarget(minion) and PredictedHealth < VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + SOWi:BonusDamage(minion) and SOWi:CanAttack()==true ) and ( 
+			( Q:IsReady() and getDmg("Q",minion,myHero)>=minion.health and menu.Q.laneclear and CAST_Q(minion) ) or ( W:IsReady() and getDmg("W",minion,myHero)>=minion.health and menu.W.laneclear and CAST_W(minion) )
+			or ( R:IsReady() and getDmg("R",minion,myHero)>=minion.health and (menu.R.laneclear or menu.R.cast) and CAST_R(minion) ) )
+			then
+			break
+		end
+	end
+end
+function JUNGLE()
+	target = SOWi.JungleMinions.objects[1]
+	if ValidTarget(target) then
+		if menu.Q.jungle then
+			CAST_Q(target)
+		end
+		if menu.W.jungle then
+			CAST_W(target)
+		end
+		if menu.R.jungle then
+			CAST_R(target)
+		end
+	end
+end
+function CountEnemyHeroInRange(range)
+    local rangeSqr = range*range
+    local enemyInRange = 0
+    for _,e in pairs(GetEnemyHeroes()) do
+        if ValidTarget(e) and GetDistanceSqr(e) <= rangeSqr then
+            enemyInRange = enemyInRange + 1
+        end
+    end
+    return enemyInRange	
+end
+function IsEnemyFlee(enemy)
+	local lastclick = enemy:GetPath(enemy.pathCount)
+	return lastclick and GetDistanceSqr(lastclick)>GetDistance(enemy)
+end
+end
