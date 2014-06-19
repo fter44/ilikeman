@@ -1,6 +1,6 @@
 if myHero.charName ~= "Draven" then return end
 
-local version = "0.15"
+local version = "0.16"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
@@ -137,6 +137,7 @@ function Load_Menu()
 		menu.E:addParam("cast", "Manual Cast", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("A"))
 	menu:addSubMenu("R", "R")		
 		menu.R:addParam("ks", "KS R", SCRIPT_PARAM_ONOFF, true)
+		menu.R:addParam("alert", "Alert R", SCRIPT_PARAM_ONOFF, true)		
 		menu.R:addParam("min", "Min R Range", SCRIPT_PARAM_SLICE, 700, 0, 1800, 0)	
 		menu.R:addParam("max", "Max R Range", SCRIPT_PARAM_SLICE, 1700, 0, 3500, 0)
 		menu.R:addParam("cast","Manual Cast R@KS Target",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("T"))
@@ -288,7 +289,9 @@ function OnTick2()
 					CAST_R(enemy)
 					goto continue
 				else
-					PrintAlert_T(enemy,enemy.charName.." R KILLABLE",1,0,0,255)
+					if menu.R.alert then
+						PrintAlert_T(enemy,enemy.charName.." R KILLABLE",1,0,0,255)
+					end
 				end
 				R_KS_Target=enemy
 			end
