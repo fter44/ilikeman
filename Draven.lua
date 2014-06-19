@@ -1,6 +1,6 @@
 if myHero.charName ~= "Draven" then return end
 
-local version = "0.17"
+local version = "0.18"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
@@ -384,10 +384,14 @@ function OnDraw2()
 end
 
 
-local Q_OBJ_NAME="Draven_Q_reticle_self.troy"
+local Q_OBJ_NAME="Q_reticle_self"
 local R_OBJ_NAME="Draven_R_cas.troy"
 function OnCreateObj(obj)
-    if obj.name == Q_OBJ_NAME then
+	if obj.name:lower():find("draven") then
+		print(obj.name)
+	end
+    if obj.name:find(Q_OBJ_NAME) then
+		print("RETCILE CREATED")
 		table.insert(Q_RETICLES,{obj = obj,create = os.clock() , expire = os.clock()+1.30 })
     end
 end
