@@ -1,6 +1,6 @@
 if myHero.charName ~= "Draven" then return end
 
-local version = "0.16"
+local version = "0.17"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
@@ -177,6 +177,8 @@ function Load_Menu()
 		menu.Drawings:addParam("OrbWalkPos", "Highlight Orbwalk Position", SCRIPT_PARAM_ONOFF, true)		
 		menu.Drawings:addSubMenu("KillTexts","KillTexts")
 			KILLTEXTS=TEXTPOS_HPBAR(menu.Drawings.KillTexts,23,46,30)	
+			menu.Drawings.KillTexts:addParam("hit","hit",SCRIPT_PARAM_ONOFF,true)
+			menu.Drawings.KillTexts:addParam("time","time",SCRIPT_PARAM_ONOFF,true)
 	--EXTRA
 	menu:addSubMenu("Extra menu", "Extras")
 		menu.Extras:addParam("Debug", "Debug", SCRIPT_PARAM_ONOFF, false)				
