@@ -1,4 +1,4 @@
-local version = "0.21"
+local version = "0.22"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/ITEM_MANAGER.lua".."?rand="..math.random(1,10000)
@@ -314,7 +314,7 @@ function ITEM_MANAGER:OnTick_CHECK() --CHECK BUY,REMOVE ITEMS  && Disable Auto D
 		else -- have before
 			if not GetInventoryHaveItem(id) then -- now dont have item
 				local slot = self.OFFENSIVE_AP_TARGET[id]
-				self:REMOVE_OFFENSIVE_AP_NONTARGET(slot)
+				self:REMOVE_OFFENSIVE_AP_TARGET(slot)
 			end 
 		end
 	end
