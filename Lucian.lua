@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lucian" then return end
 
-local version = "0.11"
+local version = "0.12"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Lucian.lua".."?rand="..math.random(1,10000)
@@ -216,7 +216,7 @@ function OnTick2()
 		myHero:MoveTo(mousePos.x,mousePos.z)
 	end
 	--SET TARGET	
-	Target = STS:GetTarget(SPELL_DATA[_Q2].range)
+	Target = STS:GetTarget(SPELL_DATA[_E].range) or STS:GetTarget(SPELL_DATA[_Q1].range) or STS:GetTarget(SPELL_DATA[_Q2].range)
 	if not Target or not ValidTarget(Target) then
 		SOW:ForceTarget(nil)		
 		return 
@@ -234,9 +234,9 @@ function OnTick2()
 	elseif menu.Harass then		
 		SOW:ForceTarget(Target)		
 		if P_ON and menu.P.saveH then return end
-		if Q1:IsReady() and menu.Q.combo then
+		if Q1:IsReady() and menu.Q.harass then
 			CAST_Q(Target)
-		elseif W:IsReady() and menu.W.combo then
+		elseif W:IsReady() and menu.W.harass then
 			W:Cast(Target)
 		end
 	else
