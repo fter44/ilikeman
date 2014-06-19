@@ -387,9 +387,6 @@ end
 local Q_OBJ_NAME="Q_reticle_self"
 local R_OBJ_NAME="Draven_R_cas.troy"
 function OnCreateObj(obj)
-	if obj.name:lower():find("draven") then
-		print(obj.name)
-	end
     if obj.name:find(Q_OBJ_NAME) then
 		print("RETCILE CREATED")
 		table.insert(Q_RETICLES,{obj = obj,create = os.clock() , expire = os.clock()+1.30 })
