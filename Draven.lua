@@ -1,10 +1,10 @@
 if myHero.charName ~= "Draven" then return end
 
-local version = "0.14"
+local version = "0.15"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Draven.lua".."?rand="..math.random(1,10000)
-local UPDATE_FILE_PATH = LIB_PATH.."Draven.lua"
+local UPDATE_FILE_PATH = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Draven:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
