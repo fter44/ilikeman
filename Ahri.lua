@@ -1,7 +1,7 @@
 if myHero.charName ~= "Ahri" then return end
 
 
-local version = "0.11"
+local version = "0.12"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Ahri.lua".."?rand="..math.random(1,10000)
@@ -266,7 +266,7 @@ local KD_nexttick=0
 function KD()
 	if os.clock() < KD_nexttick then return end
 	KD_nexttick = os.clock()+0.2
-	lib.print(os.clock())
+	--lib.print(os.clock())
 	for _,enemy in ipairs(GetEnemyHeroes()) do
 		if ValidTarget(enemy) then
 			local Qd 	= Q:IsReady() and getDmg("Q",enemy,myHero,3)--1 init 2 wayback 3 total
