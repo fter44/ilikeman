@@ -2,7 +2,7 @@ if myHero.charName ~= "Ezreal" then return end
 
 
 
-local version = "0.11"
+local version = "0.12"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Ezreal.lua".."?rand="..math.random(1,10000)
@@ -118,6 +118,7 @@ function Load_Menu()
 		--menu.E:addParam("gap", "Anti-Gapcloser with E", SCRIPT_PARAM_ONOFF, true)
 	menu:addSubMenu("R", "R")
 		menu.R:addParam("ks", "KS R", SCRIPT_PARAM_ONOFF, true)
+		menu.R:addParam("alert", "Alert R", SCRIPT_PARAM_ONOFF, true)
 		menu.R:addParam("min", "Min R Range", SCRIPT_PARAM_SLICE, 1100, 0, 1800, 0)	
 		menu.R:addParam("max", "Max R Range", SCRIPT_PARAM_SLICE, 1700, 0, 3575, 0)
 		menu.R:addParam("N", "Min Enemies for Auto R", SCRIPT_PARAM_SLICE, 4, 1, 5, 0)
@@ -171,7 +172,9 @@ function OnTick2()
 				if menu.R.ks then
 					CAST_R(enemy,true)
 				else
-					PrintAlert_T(enemy,enemy.charName.." R KILLABLE",1,0,0,255)
+					if menu.R.alert then
+						PrintAlert_T(enemy,enemy.charName.." R KILLABLE",1,0,0,255)
+					end
 				end
 				R_KS_Target=enemy
 			end
