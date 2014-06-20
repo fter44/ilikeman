@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.311"
+local version = "0.312"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Riven.lua".."?rand="..math.random(1,10000)
@@ -272,7 +272,7 @@ function OnTick2()
 		--Q
 		if not SOWi:InRange(Target) or menu.Q.cast or (not SOWi:CanAttack() and SOWi.Attack_Completed==true) then
 			if not CAST_Q(Target) then--Q failed for distance				
-				
+				GAPCLOSE_Q(Target)
 			end
 		end
 	end
