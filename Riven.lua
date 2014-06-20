@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.21"
+local version = "0.30"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Riven.lua".."?rand="..math.random(1,10000)
@@ -133,6 +133,14 @@ function OnLoad()
 				menu.Q.q1,menu.Q.q2,menu.Q.q3=0.25,0.25,0.25
 			end
 		end)
+		
+		
+		menu.Q:addParam("gap1","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("rangegap1", "Q1 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
+		menu.Q:addParam("gap2","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("rangegap2", "Q2 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
+		menu.Q:addParam("gap3","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("rangegap3", "Q3 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
 	menu:addSubMenu("W","W")
 		menu.W:addParam("ks","use W for killsteal",SCRIPT_PARAM_ONOFF,true)
 		menu.W:addParam("tiamat","use W after tiamat",SCRIPT_PARAM_ONOFF,true)
@@ -240,6 +248,7 @@ function OnTick2()
 	
 	--Combo
 	if menu.combo then
+	
 		--R
 		if (Q_Sequence==0 and Q:IsReady()) and (R_ON==false and R:IsReady()) and (GetComboDmg(Target,false) < Target.health) and (GetComboDmg(Target,true) > Target.health) then
 			PrintAlert_T("RCOMBO"..Target.charName,Target.charName.." R COMBO KILLABLE",3,255,255,255,0)
@@ -262,7 +271,9 @@ function OnTick2()
 		end
 		--Q
 		if not SOWi:InRange(Target) or menu.Q.cast or (not SOWi:CanAttack() and SOWi.Attack_Completed==true) then
-			CAST_Q(Target)
+			if not CAST_Q(Target) then--Q failed for distance				
+				
+			end
 		end
 	end
 end
@@ -309,19 +320,25 @@ function OnUpdateBuff(unit,buff)
 		end
 	end
 end
-
+function GAPCLOSE_Q(target)
+	local range = menu.Q.[rangegap..Q_Sequence]
+	local rangeSqr = range*range
+	if menu.Q.[gap..Q_Sequence] and GetDistanceSqr(Target)<=rangeSqr then
+		CastSpell(_Q,target.x,target.z)
+	end	
+end
 function CAST_Q(target)--COMBO Q	
 	if R_ON then
 		if Q_Sequence==2 and RQ3:IsInRange(target) then	--3rd Q
-			return RQ3:Cast(target.x,target.z)
+			return RQ3:Cast(target.x,target.z)==SPELLSTATE_TRIGGERED
 		elseif RQ:IsInRange(target) then
-			return RQ:Cast(target.x,target.z)
+			return RQ:Cast(target.x,target.z)==SPELLSTATE_TRIGGERED
 		end
 	else
 		if Q_Sequence==2 and Q3:IsInRange(target) then	--3rd Q
-			return Q3:Cast(target.x,target.z)
+			return Q3:Cast(target.x,target.z)==SPELLSTATE_TRIGGERED
 		elseif Q:IsInRange(target) then
-			return Q:Cast(target.x,target.z)
+			return Q:Cast(target.x,target.z)==SPELLSTATE_TRIGGERED
 		end
 	end
 end
