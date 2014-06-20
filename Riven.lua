@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.312"
+local version = "0.313"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Riven.lua".."?rand="..math.random(1,10000)
@@ -137,9 +137,9 @@ function OnLoad()
 		
 		menu.Q:addParam("gap1","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
 		menu.Q:addParam("rangegap1", "Q1 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
-		menu.Q:addParam("gap2","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("gap2","gapclose with Q2",SCRIPT_PARAM_ONOFF,false)		
 		menu.Q:addParam("rangegap2", "Q2 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
-		menu.Q:addParam("gap3","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("gap3","gapclose with Q3",SCRIPT_PARAM_ONOFF,false)		
 		menu.Q:addParam("rangegap3", "Q3 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
 	menu:addSubMenu("W","W")
 		menu.W:addParam("ks","use W for killsteal",SCRIPT_PARAM_ONOFF,true)
