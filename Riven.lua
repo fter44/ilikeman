@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.313"
+local version = "0.314"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Riven.lua".."?rand="..math.random(1,10000)
@@ -124,9 +124,9 @@ function OnLoad()
 					IM:CAST_OFFENSIVE_AD(target,true)--CAST_TIAMAT(target)
 				end
 			end)
-		menu.Q:addParam("q1", "Q1 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
-		menu.Q:addParam("q2", "Q2 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
-		menu.Q:addParam("q3", "Q3 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
+		menu.Q:addParam("q0", "Q1 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
+		menu.Q:addParam("q1", "Q2 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
+		menu.Q:addParam("q2", "Q3 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
 		menu.Q:addParam("default","Set Default Delay",SCRIPT_PARAM_ONOFF,false,_,_,_,function(change)
 			if change==true then
 				menu.Q.default=false
@@ -135,12 +135,12 @@ function OnLoad()
 		end)
 		
 		
-		menu.Q:addParam("gap1","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
-		menu.Q:addParam("rangegap1", "Q1 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
-		menu.Q:addParam("gap2","gapclose with Q2",SCRIPT_PARAM_ONOFF,false)		
-		menu.Q:addParam("rangegap2", "Q2 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
-		menu.Q:addParam("gap3","gapclose with Q3",SCRIPT_PARAM_ONOFF,false)		
-		menu.Q:addParam("rangegap3", "Q3 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
+		menu.Q:addParam("gap0","gapclose with Q1",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("rangegap0", "Q1 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
+		menu.Q:addParam("gap1","gapclose with Q2",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("rangegap1", "Q2 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
+		menu.Q:addParam("gap2","gapclose with Q3",SCRIPT_PARAM_ONOFF,false)		
+		menu.Q:addParam("rangegap2", "Q3 gapclose range", SCRIPT_PARAM_SLICE, 300, 0, 500)
 	menu:addSubMenu("W","W")
 		menu.W:addParam("ks","use W for killsteal",SCRIPT_PARAM_ONOFF,true)
 		menu.W:addParam("tiamat","use W after tiamat",SCRIPT_PARAM_ONOFF,true)
