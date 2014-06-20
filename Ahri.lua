@@ -1,10 +1,10 @@
 if myHero.charName ~= "Ahri" then return end
 
 
-local version = "0.12"
+local version = "0.13"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/fter44/ilikeman/master/common/Ahri.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/fter44/ilikeman/master/Ahri.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
