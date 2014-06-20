@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.13"
+local version = "0.20"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Riven.lua".."?rand="..math.random(1,10000)
@@ -231,13 +231,20 @@ function OnTick2()
 	if not Target or not ValidTarget(Target) then return end	
 	--Combo
 	if menu.combo then
+		if not menu.R.wait and menu.R.auto then
+			if not R_ON and ValidTarget(R_ON_FLAG_TARGET,300) and R_ON_FLAG and R:IsReady() then --AUTOMATIC R
+				CAST_R1()
+			end			
+		end
 		--R
-		if (Q_Sequence==0 and Q:IsReady()) and (R_ON==false and R:IsReady()) and (GetComboDmg(Target,false) < Target.health) and (GetComboDmg(Target,true) > Target.health) then
+		if (Q_Sequence==0 and Q:IsReady()) and (R_ON==false and R:IsReady()) and true then--(GetComboDmg(Target,false) < Target.health) and (GetComboDmg(Target,true) > Target.health) then
 			PrintAlert_T("RCOMBO"..Target.charName,Target.charName.." R COMBO KILLABLE",3,255,255,255,0)
 			if menu.R.wait and menu.R.auto then
 				R_ON_FLAG=true
 				R_ON_FLAG_TARGET=Target
-			elseif menu.R.auto then
+			elseif menu.R.auto then			
+				R_ON_FLAG=true
+				R_ON_FLAG_TARGET=Target
 				CAST_R1()
 			end
 		end
@@ -331,7 +338,7 @@ end
 
 function CAST_R1()
 	if not R_ON then
-		--print("R1 on CAST_R1")
+	--	print("R1 on CAST_R1")
 		CastSpell(_R)
 	end
 end
@@ -411,6 +418,7 @@ function GetComboDmg(target,useR)
 	return totalDmg
 end
 function OnDraw()
+	--DrawText("R_ON:"..tostring(R_ON).." R_ON_FLAG:"..tostring(R_ON_FLAG),18,500 ,500 ,ARGB(255,0,255,0))		
 end
 local Alert_Texts={}
 function PrintAlert_T(id,text,duration,r,g,b)
