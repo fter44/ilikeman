@@ -3,7 +3,7 @@ if myHero.charName ~= "Lucian" then return end
 local version = "0.13"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/fter44/ilikeman/master/Lucian.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/fter44/ilikeman/master/common/Lucian.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
@@ -224,7 +224,6 @@ function OnTick2()
 	
 	
 	if menu.Combo then
-		SOW:ForceTarget(Target)
 		if P_ON and menu.P.saveC then return end
 		if Q1:IsReady() and menu.Q.combo then
 			CAST_Q(Target)
@@ -232,7 +231,6 @@ function OnTick2()
 			W:Cast(Target) 
 		end
 	elseif menu.Harass then		
-		SOW:ForceTarget(Target)		
 		if P_ON and menu.P.saveH then return end
 		if Q1:IsReady() and menu.Q.harass then
 			CAST_Q(Target)
@@ -336,7 +334,7 @@ do
 	
 			
 function CAST_Q(Target,forceNoExtend)
-	if Q1:IsInRangeAdv(Target) then
+	if Q1:IsInRange(Target) then--Q1:IsInRangeAdv(Target) then
 		return Q1:Cast(Target)
 	elseif Q2:IsInRange(Target) and not forceNoExtend then
 		local _, hitChance, position=Q2:GetPrediction(Target)
