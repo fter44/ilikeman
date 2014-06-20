@@ -144,7 +144,7 @@ function SetLibrary()
 	
 	--Q
 		Q=Spell(_Q,SPELL_DATA[_Q].range)
-			Q:SetSkillshot(VP, SPELL_DATA[_Q].skillshotType, SPELL_DATA[_Q].width, SPELL_DATA[_Q].delay, SPELL_DATA[_Q].speed, SPELL_DATA[_Q].collision)
+			Q:SetSkillshot(VP, SPELL_DATA[_Q].skillshotType, SPELL_DATA[_Q].width, SPELL_DATA[_Q].delay, SPELL_DATA[_Q].speed, true)
 	--W
 		W=Spell(_W,SPELL_DATA[_W].range)
 		if TargetHaveBuff("amumutear",myHero) then
