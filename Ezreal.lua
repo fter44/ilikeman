@@ -2,7 +2,7 @@ if myHero.charName ~= "Ezreal" then return end
 
 
 
-local version = "0.12"
+local version = "0.13"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Ezreal.lua".."?rand="..math.random(1,10000)
