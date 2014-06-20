@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.30"
+local version = "0.31"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Riven.lua".."?rand="..math.random(1,10000)
@@ -321,9 +321,9 @@ function OnUpdateBuff(unit,buff)
 	end
 end
 function GAPCLOSE_Q(target)
-	local range = menu.Q.[rangegap..Q_Sequence]
+	local range = menu.Q.["rangegap"..Q_Sequence]
 	local rangeSqr = range*range
-	if menu.Q.[gap..Q_Sequence] and GetDistanceSqr(Target)<=rangeSqr then
+	if menu.Q.["gap"..Q_Sequence] and GetDistanceSqr(Target)<=rangeSqr then
 		CastSpell(_Q,target.x,target.z)
 	end	
 end
