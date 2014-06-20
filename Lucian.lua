@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lucian" then return end
 
-local version = "0.14"
+local version = "0.15"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/Lucian.lua".."?rand="..math.random(1,10000)
@@ -413,7 +413,7 @@ myHero.MoveTo=function(self,x,y)
 end]]
 function AfterAttack(target,mode)
 	if ValidTarget(target) and not PASSIVE_ON then
-		if ((menu.Q.combo and menu.Combo) or (menu.Harass and menu.Q.harass) or (menu.Q.cast) ) and Q1:IsReady() then
+		if (  ( target.type==myHero.type and ((menu.Q.combo and menu.Combo) or (menu.Harass and menu.Q.harass))) or (menu.Q.cast) ) and Q1:IsReady() then
 			CAST_Q(target)
 		elseif ((menu.W.combo and menu.Combo) or (menu.Harass and menu.W.harass) or (menu.W.cast) ) and W:IsReady() then
 			CAST_W(target)
