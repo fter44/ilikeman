@@ -1,4 +1,4 @@
-local version = "0.22"
+local version = "0.23"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/ITEM_MANAGER.lua".."?rand="..math.random(1,10000)
@@ -61,7 +61,7 @@ local ITEM_MANAGER_OFFENSIVE_AP_TARGET = {
 	--[3188]={rangeSqr = 750*750, name="BLACKFIRE[AP]"}, NOT SR
 }
 local ITEM_MANAGER_OFFENSIVE_AD_NONTARGET = {	
-	[3131]={range = 200*200,name="DVN[AD]"},	--AD CRITICAL 신성의검	
+	[3131]={rangeSqr = 200*200,name="DVN[AD]"},	--AD CRITICAL 신성의검	
 	[3074]={rangeSqr = 350*350,name="HYDRA[AD]" },		--AD
 	[3077]={rangeSqr = 350*350,name="TIAMAT[AD]" },		--AD	
 	[3142]={rangeSqr = 350*350,name="YGB[AD]" },		--AD요우무
