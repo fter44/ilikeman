@@ -1,6 +1,6 @@
-local version = "0.1"
+local version = "0.2"
 local TESTVERSION = false
-local AUTOUPDATE = true
+local AUTOUPDATE = false
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/LEVEL.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = LIB_PATH.."LEVEL.lua"
@@ -48,7 +48,7 @@ function LEVEL:RegisterOnLevelUPCallback(fn)
 	return self
 end
 function LEVEL:OnTick()
-	if os.clock-self.lasttick<0.5 then return end
+	if os.clock()-self.lasttick<0.5 then return end
 	
 	if self.Level~=myHero.level then --LEVEL UP!
 		self.Level=myHero.level
