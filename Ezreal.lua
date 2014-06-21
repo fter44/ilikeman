@@ -350,7 +350,7 @@ end
 do
 function OnGainBuff(unit, buff)
 	if unit.isMe then
-		print(buff.name)
+		--print(buff.name)
 		if buff.name == P_BUFF_NAME then
 			P_BUFF_STACK = 1
 		end
