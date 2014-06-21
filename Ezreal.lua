@@ -2,7 +2,7 @@ if myHero.charName ~= "Ezreal" then return end
 
 
 
-local version = "0.13"
+local version = "0.14"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/Ezreal.lua".."?rand="..math.random(1,10000)
@@ -350,7 +350,6 @@ end
 do
 function OnGainBuff(unit, buff)
 	if unit.isMe then
-		--print(buff.name)
 		if buff.name == P_BUFF_NAME then
 			P_BUFF_STACK = 1
 		end
