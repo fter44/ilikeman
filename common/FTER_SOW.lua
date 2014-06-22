@@ -1,4 +1,11 @@
-local version = "0.10"
+--[[
+Change-log
+	0.11 Option to Prioritize Enemy than Minion added
+
+]]
+
+
+local version = "0.11"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/FTER_SOW.lua".."?rand="..math.random(1,10000)
@@ -184,6 +191,7 @@ function SOW:LoadToMenu(m, STS)
 	self.Menu:addParam("Mode",  "Orbwalking mode", SCRIPT_PARAM_LIST, 1, { "To mouse", "To target"})
 
 	
+	self.Menu:addParam("CPriority", "Prioritize harass enemy ", SCRIPT_PARAM_ONOFF, true )--fter44
 	self.Menu:addParam("ALimit", "AA Fire Time Limit", SCRIPT_PARAM_SLICE, 0.10,  0.010, 0.15,2)--fter44
 	
 	self.Menu:addParam("Hotkeys", "", SCRIPT_PARAM_INFO, "")
@@ -801,8 +809,13 @@ end
 
 function SOW:Farm(mode, point)
 	if mode == 1 then --Mix
+		local target
 		self.EnemyMinions:update()
-		local target = self:KillableMinion() or self:GetTarget()
+		if self.menu.CPriority then
+			target = self:GetTarget() or self:KillableMinion()
+		else
+			target = self:KillableMinion() or self:GetTarget()
+		end
 		self:OrbWalk(target, point)
 		self.mode = 1
 	elseif mode == 2 then --LaneClear
