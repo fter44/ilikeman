@@ -811,7 +811,7 @@ function SOW:Farm(mode, point)
 	if mode == 1 then --Mix
 		local target
 		self.EnemyMinions:update()
-		if self.menu.CPriority then
+		if self.Menu.CPriority then
 			target = self:GetTarget() or self:KillableMinion()
 		else
 			target = self:KillableMinion() or self:GetTarget()
