@@ -1,4 +1,4 @@
-local version = "0.30"
+local version = "0.31"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/ITEM_MANAGER.lua".."?rand="..math.random(1,10000)
@@ -25,11 +25,14 @@ if AUTOUPDATE then
 end
 
 
-local scriptFile = LIB_PATH .. "Edited_AllClass" .. ".lua"
-if FileExist(scriptFile) then
-	require "Edited_AllClass"
-else
-	DownloadFile("https://"..UPDATE_HOST.."/fter44/ilikeman/master/common/Edited_AllClass.lua".."?rand="..math.random(1,10000), scriptFile, function() AutoupdaterMsg("Edited_AllClass Downloaded F9 twice plz") end)
+function scriptConfig:removeParam(pVar)
+    assert(type(pVar) == "string" and self[pVar] ~= nil, "removeParam: existing pVar expected)")
+    for index, param in ipairs(self._param) do
+        if param.var == pVar then
+			self._param[index]=nil
+        end
+    end
+	self[pVar]=nil
 end
 
 
