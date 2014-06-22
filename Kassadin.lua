@@ -13,12 +13,12 @@ if myHero.charName ~= "Kassadin" then return end
 --Libraries
 local lib_infos={
 	["vPrediction" ]		= "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua",
-	["SOW"]	  				= "https://raw.github.com/honda7/BoL/master/Common/SOW.lua",
+	["FTER_SOW"]	  		= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/FTER_SOW.lua",
 	["ITEM_MANAGER"	]		= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/ITEM_MANAGER.lua",
 	["DRAW_POS_MANAGER"]  	= "https://raw.githubusercontent.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua",
 }
 local SCRIPT_NAME = "Kassadin"
-local My_Version = 0.23
+local My_Version = 0.30
 local My_Host = "raw.github.com"
 local My_Path = "/fter44/ilikeman/master/"..SCRIPT_NAME..".lua"
 local AUTOUPDATE = true
