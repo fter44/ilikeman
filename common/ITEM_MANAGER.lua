@@ -27,7 +27,7 @@ end
 
 local scriptFile = LIB_PATH .. "Edited_AllClass" .. ".lua"
 if FileExist(scriptFile) then
-	require("Edited_AllClass.lua")
+	require "Edited_AllClass"
 else
 	DownloadFile("https://"..UPDATE_HOST.."/fter44/ilikeman/master/common/Edited_AllClass.lua".."?rand="..math.random(1,10000), scriptFile, function() AutoupdaterMsg("Edited_AllClass Downloaded F9 twice plz") end)
 end
