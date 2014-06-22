@@ -2,7 +2,7 @@ if myHero.charName ~= "Katarina" then return end
 
 
 
-local version = "0.21"
+local version = "0.22"
 local SCRIPT_NAME = "Katarina"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -111,6 +111,11 @@ function Load_Menu()
 	--TS
 	menu:addSubMenu("Target selector", "STS")
 		STS:AddToMenu(menu.STS)	
+	
+	--ITEMS
+	menu:addSubMenu("Items","Items")
+		IM=ITEM_MANAGER(menu.Items,STS)
+		
 	--AntiGapcloser
 	--[[
 	menu:addSubMenu("AntiGapcloser","AG")
