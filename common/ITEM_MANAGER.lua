@@ -1,4 +1,4 @@
-	local version = "0.30"
+local version = "0.30"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/ITEM_MANAGER.lua".."?rand="..math.random(1,10000)
@@ -27,7 +27,7 @@ end
 
 local scriptFile = LIB_PATH .. "Edited_AllClass" .. ".lua"
 if FileExist(scriptFile) then
-	require(Edited_AllClass.lua)
+	require("Edited_AllClass.lua")
 else
 	DownloadFile("https://"..UPDATE_HOST.."/fter44/ilikeman/master/common/Edited_AllClass.lua".."?rand="..math.random(1,10000), scriptFile, function() AutoupdaterMsg("Edited_AllClass Downloaded F9 twice plz") end)
 end
