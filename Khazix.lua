@@ -1,39 +1,41 @@
 if myHero.charName ~= "Khazix" then return end
 
-local version = "0.10"
+local version = "0.20"
+local SCRIPT_NAME = "Khazix"
 local AUTOUPDATE = true
-local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/fter44/ilikeman/master/Khazix.lua".."?rand="..math.random(1,10000)
-local UPDATE_FILE_PATH = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Khazix:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
-if AUTOUPDATE then
-	local ServerData = GetWebResult(UPDATE_HOST, "/fter44/ilikeman/master/VersionFiles/Khazix.version".."?rand="..math.random(1,10000))
-	if ServerData then
-		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
-		if ServerVersion then
-			if tonumber(version) < ServerVersion then
-				AutoupdaterMsg("New version available"..ServerVersion)
-				AutoupdaterMsg("Updating, please don't press F9")
-				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
-			else
-				AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
-			end
-		end
-	else
-		AutoupdaterMsg("Error downloading version info")
-	end
+local SOURCELIB_URL = "https://raw.github.com/TheRealSource/public/master/common/SourceLib.lua"
+local SOURCELIB_PATH = LIB_PATH.."SourceLib.lua"
+if FileExist(SOURCELIB_PATH) then
+	require("SourceLib")
+else
+	DOWNLOADING_SOURCELIB = true
+	DownloadFile(SOURCELIB_URL, SOURCELIB_PATH, function() print("Required libraries downloaded successfully, please reload") end)
 end
 
+if DOWNLOADING_SOURCELIB then print("Downloading required libraries, please wait...") return end
 
+if AUTOUPDATE then
+	 SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/fter44/ilikeman/master/"..SCRIPT_NAME..".lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/fter44/ilikeman/master/VersionFiles/"..SCRIPT_NAME..".version"):CheckUpdate()
+end
 
-require "Prodiction" 
-require "VPrediction"
-require 'SOW'
-require "SourceLib"
-require "DRAW_POS_MANAGER"
-require "ITEM_MANAGER"
+local RequireI = Require("SourceLib")
+RequireI:Add("VPrediction", "https://raw.github.com/fter44/ilikeman/master/Common/VPrediction.lua")
+RequireI:Add("FTER_SOW", "https://raw.github.com/fter44/ilikeman/master/Common/FTER_SOW.lua")
+RequireI:Add("DRAW_POS_MANAGER", "https://raw.github.com/fter44/ilikeman/master/Common/DRAW_POS_MANAGER.lua")
+RequireI:Add("ITEM_MANAGER", "https://raw.github.com/fter44/ilikeman/master/Common/ITEM_MANAGER.lua")
+RequireI:Add("LEVEL", "https://raw.github.com/fter44/ilikeman/master/Common/LEVEL.lua")
+RequireI:Add("Prodiction", "https://raw.github.com/fter44/ilikeman/master/Common/Prodiction.lua")
+RequireI:Check()
+
+if RequireI.downloadNeeded == true then return end
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --[[Menu instance]]--
 local menu
 --[[Basic Stat]]--
