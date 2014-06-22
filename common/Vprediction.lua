@@ -1,14 +1,14 @@
 local version = "2.51"
 local TESTVERSION = false
-local AUTOUPDATE = false
+local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/honda7/BoL/master/Common/VPrediction.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/Hellsing/BoL/master/common/VPrediction.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = LIB_PATH.."vPrediction.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>VPrediction:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
 if AUTOUPDATE then
-	local ServerData = GetWebResult(UPDATE_HOST, "/honda7/BoL/master/VersionFiles/vPrediction.version")
+	local ServerData = GetWebResult(UPDATE_HOST, "/Hellsing/BoL/master/version/VPrediction.version")
 	if ServerData then
 		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
 		if ServerVersion then
@@ -93,116 +93,85 @@ function VPrediction:__init()
 	AddTickCallback(function() self:OnTick() end)
 	AddDrawCallback(function() self:OnDraw() end)
 	AddProcessSpellCallback(function(unit, spell) self:CollisionProcessSpell(unit, spell) end)
-	self.BlackList_tmp = 
+	self.BlackList = 
 	{
-		{name = "aatroxq", duration = 0.75,Hero="Aatrox"}, --[[4 Dashes, OnDash fails]]
+		{name = "aatroxq", duration = 0.75}, --[[4 Dashes, OnDash fails]]
 	}
-	self.BlackList={}
-	for _,Enemy in ipairs(GetEnemyHeroes()) do
-		for _,Skill in ipairs(self.BlackList_tmp) do
-			if Enemy.charName:lower()==Skill.Hero:lower() then
-				table.insert(self.BlackList,Skill)
-			end
-		end
-	end  self.BlackList_tmp =nil
-	--[[Spells that will cause OnDash to fire, dont shoot and wait to OnDash]]
-	self.dashAboutToHappend_tmp =
-	{
-		{name = "ahritumble", duration = 0.25, Hero="ahri"},--ahri's r
-		{name = "akalishadowdance", duration = 0.25, Hero="akali"},--akali r
-		{name = "headbutt", duration = 0.25, Hero="alistar"},--alistar w
-		{name = "caitlynentrapment", duration = 0.25, Hero="caitlyn"},--caitlyn e
-		{name = "carpetbomb", duration = 0.25, Hero="corki"},--corki w
-		{name = "dianateleport", duration = 0.25, Hero="diana"},--diana r
-		{name = "fizzpiercingstrike", duration = 0.25, Hero="fizz"},--fizz q
-		{name = "fizzjump", duration = 0.25, Hero="fizz"},--fizz e
-		{name = "gragasbodyslam", duration = 0.25, Hero="gragas"},--gragas e
-		{name = "gravesmove", duration = 0.25, Hero="graves"},--graves e
-		{name = "ireliagatotsu", duration = 0.25, Hero="irelia"},--irelia q
-		{name = "jarvanivdragonstrike", duration = 0.25, Hero="jarvan"},--jarvan q
-		{name = "jaxleapstrike", duration = 0.25, Hero="jax"},--jax q
-		{name = "khazixe", duration = 0.25, Hero="khazix"},--khazix e and e evolved
-		{name = "leblancslide", duration = 0.25, Hero="leblanc"},--leblanc w
-		{name = "leblancslidem", duration = 0.25, Hero="leblanc"},--leblanc w (r)
-		{name = "blindmonkqtwo", duration = 0.25, Hero="leesin"},--lee sin q 
-		{name = "blindmonkwone", duration = 0.25, Hero="leesin"},--lee sin w
-		{name = "luciane", duration = 0.25, Hero="lucian"},--lucian e
-		{name = "maokaiunstablegrowth", duration = 0.25, Hero="maokai"},--maokai w
-		{name = "nocturneparanoia2", duration = 0.25, Hero="nocturne"},--nocturne r
-		{name = "pantheon_leapbash", duration = 0.25, Hero="pantheon"},--pantheon e?
-		{name = "renektonsliceanddice", duration = 0.25, Hero="renekton"},--renekton e
-		{name = "riventricleave", duration = 0.25, Hero="riven"},--riven q
-		{name = "rivenfeint", duration = 0.25, Hero="riven"},--riven e
-		{name = "sejuaniarcticassault", duration = 0.25, Hero="sejuani"},--sejuani q
-		{name = "shenshadowdash", duration = 0.25, Hero="shen"},--shen e
-		{name = "shyvanatransformcast", duration = 0.25, Hero="shyvana"},--shyvana r
-		{name = "rocketjump", duration = 0.25, Hero="tristana"},--tristana w
-		{name = "slashcast", duration = 0.25, Hero="tryndamere"},--tryndamere e
-		{name = "vaynetumble", duration = 0.25, Hero="vayne"},--vayne q
-		{name = "viq", duration = 0.25, Hero="vi"},--vi q
-		{name = "monkeykingnimbus", duration = 0.25, Hero="monkeyking"},--wukong q
-		{name = "xenzhaosweep", duration = 0.25, Hero="xinzhao"},--xin zhao q
-		{name = "yasuodashwrapper", duration = 0.25, Hero="yasuo"},--yasuo e
-	}
-	self.dashAboutToHappend={}
-	for _,Enemy in ipairs(GetEnemyHeroes()) do
-		for _,Dash_Skill in ipairs(self.dashAboutToHappend_tmp) do
-			if Enemy.charName:lower()==Dash_Skill.Hero:lower() then
-				table.insert(self.dashAboutToHappend,Dash_Skill)
-			end
-		end
-	end self.dashAboutToHappend_tmp=nil
 	
-	--[[Spells that don't allow movement (durations approx)]]
-	self.spells_tmp = {
-		{name = "katarinar", duration = 1,Hero="Katarina"}, --Katarinas R
-		{name = "drain", duration = 1,Hero="Katarina"}, --Fiddle W
-		{name = "crowstorm", duration = 1,Hero="Fiddlesticks"}, --Fiddle R
-		{name = "consume", duration = 0.5,Hero="Nunu"}, --Nunu Q
-		{name = "absolutezero", duration = 1,Hero="Nunu"}, --Nunu R
-		{name = "rocketgrab", duration = 0.5,Hero="Blitzcrank"}, --Blitzcrank Q
-		{name = "staticfield", duration = 0.5,Hero="Blitzcrank"}, --Blitzcrank R
-		{name = "cassiopeiapetrifyinggaze", duration = 0.5,Hero="Cassiopeia"}, --Cassio's R
-		{name = "ezrealtrueshotbarrage", duration = 1,Hero="Ezreal"}, --Ezreal's R
-		{name = "galioidolofdurand", duration = 1,Hero="Ezreal"}, --Ezreal's R
-		--{name = "gragasdrunkenrage", duration = 1,Hero="Gragas"}, --""Gragas W
-		{name = "luxmalicecannon", duration = 1,Hero="Lux"}, --Lux R
-		{name = "reapthewhirlwind", duration = 1,Hero="Janna"}, --Jannas R
-		{name = "jinxw", duration = 0.6,Hero="Jinx"}, --jinxW
-		{name = "jinxr", duration = 0.6,Hero="Jinx"}, --jinxR
-		{name = "missfortunebullettime", duration = 1,Hero="MissFortune"}, --MissFortuneR
-		{name = "shenstandunited", duration = 1,Hero="Shen"}, --ShenR
-		{name = "threshe", duration = 0.4,Hero="Thresh"}, --ThreshE
-		{name = "threshrpenta", duration = 0.75,Hero="Thresh"}, --ThreshR
-		{name = "infiniteduress", duration = 1,Hero="Warwick"}, --Warwick R
-		{name = "meditate", duration = 1,Hero="MasterYi"} --yi W
-	}
-	self.spells={}
-	for _,Enemy in ipairs(GetEnemyHeroes()) do
-		for _,Skill in ipairs(self.spells_tmp) do
-			if Enemy.charName:lower()==Skill.Hero:lower() then
-				table.insert(self.spells,Skill)
-			end
-		end
-	end self.spells_tmp=nil
+	--[[Spells that will cause OnDash to fire, dont shoot and wait to OnDash]]
+	self.dashAboutToHappend =
+	{
+		{name = "ahritumble", duration = 0.25},--ahri's r
+		{name = "akalishadowdance", duration = 0.25},--akali r
+		{name = "headbutt", duration = 0.25},--alistar w
+		{name = "caitlynentrapment", duration = 0.25},--caitlyn e
+		{name = "carpetbomb", duration = 0.25},--corki w
+		{name = "dianateleport", duration = 0.25},--diana r
+		{name = "fizzpiercingstrike", duration = 0.25},--fizz q
+		{name = "fizzjump", duration = 0.25},--fizz e
+		{name = "gragasbodyslam", duration = 0.25},--gragas e
+		{name = "gravesmove", duration = 0.25},--graves e
+		{name = "ireliagatotsu", duration = 0.25},--irelia q
+		{name = "jarvanivdragonstrike", duration = 0.25},--jarvan q
+		{name = "jaxleapstrike", duration = 0.25},--jax q
+		{name = "khazixe", duration = 0.25},--khazix e and e evolved
+		{name = "leblancslide", duration = 0.25},--leblanc w
+		{name = "leblancslidem", duration = 0.25},--leblanc w (r)
+		{name = "blindmonkqtwo", duration = 0.25},--lee sin q 
+		{name = "blindmonkwone", duration = 0.25},--lee sin w
+		{name = "luciane", duration = 0.25},--lucian e
+		{name = "maokaiunstablegrowth", duration = 0.25},--maokai w
+		{name = "nocturneparanoia2", duration = 0.25},--nocturne r
+		{name = "pantheon_leapbash", duration = 0.25},--pantheon e?
+		{name = "renektonsliceanddice", duration = 0.25},--renekton e
+		{name = "riventricleave", duration = 0.25},--riven q
+		{name = "rivenfeint", duration = 0.25},--riven e
+		{name = "sejuaniarcticassault", duration = 0.25},--sejuani q
+		{name = "shenshadowdash", duration = 0.25},--shen e
+		{name = "shyvanatransformcast", duration = 0.25},--shyvana r
+		{name = "rocketjump", duration = 0.25},--tristana w
+		{name = "slashcast", duration = 0.25},--tryndamere e
+		{name = "vaynetumble", duration = 0.25},--vayne q
+		{name = "viq", duration = 0.25},--vi q
+		{name = "monkeykingnimbus", duration = 0.25},--wukong q
+		{name = "xenzhaosweep", duration = 0.25},--xin xhao q
+		{name = "yasuodashwrapper", duration = 0.25},--yasuo e
 
-	self.blinks_tmp = {
-		{name = "ezrealarcaneshift", range = 475, delay = 0.25, delay2=0.8,Hero="Ezreal"},--Ezreals E
-		{name = "deceive", range = 400, delay = 0.25, delay2=0.8,Hero="Shaco"}, --Shacos Q
-		{name = "riftwalk", range = 700, delay = 0.25, delay2=0.8,Hero="Kassadin"},--KassadinR
-		{name = "gate", range = 5500, delay = 1.5, delay2=1.5,Hero="TwistedFate"},--Twisted fate R
-		{name = "katarinae", range = math.huge, delay = 0.25, delay2=0.8,Hero="Katarina"},--Katarinas E
-		{name = "elisespideredescent", range = math.huge, delay = 0.25, delay2=0.8,Hero="Elise"},--Elise E
-		{name = "elisespidere", range = math.huge, delay = 0.25, delay2=0.8,Hero="Elise"},--Elise insta E
 	}
-	self.blinks={}
-	for _,Enemy in ipairs(GetEnemyHeroes()) do
-		for _,Skill in ipairs(self.blinks_tmp) do
-			if Enemy.charName:lower()==Skill.Hero:lower() then
-				table.insert(self.blinks,Skill)
-			end
-		end
-	end self.blinks_tmp=nil
+	--[[Spells that don't allow movement (durations approx)]]
+	self.spells = {
+		{name = "katarinar", duration = 1}, --Katarinas R
+		{name = "drain", duration = 1}, --Fiddle W
+		{name = "crowstorm", duration = 1}, --Fiddle R
+		{name = "consume", duration = 0.5}, --Nunu Q
+		{name = "absolutezero", duration = 1}, --Nunu R
+		{name = "rocketgrab", duration = 0.5}, --Blitzcrank Q
+		{name = "staticfield", duration = 0.5}, --Blitzcrank R
+		{name = "cassiopeiapetrifyinggaze", duration = 0.5}, --Cassio's R
+		{name = "ezrealtrueshotbarrage", duration = 1}, --Ezreal's R
+		{name = "galioidolofdurand", duration = 1}, --Ezreal's R
+		{name = "gragasdrunkenrage", duration = 1}, --""Gragas W
+		{name = "luxmalicecannon", duration = 1}, --Lux R
+		{name = "reapthewhirlwind", duration = 1}, --Jannas R
+		{name = "jinxw", duration = 0.6}, --jinxW
+		{name = "jinxr", duration = 0.6}, --jinxR
+		{name = "missfortunebullettime", duration = 1}, --MissFortuneR
+		{name = "shenstandunited", duration = 1}, --ShenR
+		{name = "threshe", duration = 0.4}, --ThreshE
+		{name = "threshrpenta", duration = 0.75}, --ThreshR
+		{name = "infiniteduress", duration = 1}, --Warwick R
+		{name = "meditate", duration = 1} --yi W
+	}
+
+	self.blinks = {
+		{name = "ezrealarcaneshift", range = 475, delay = 0.25, delay2=0.8},--Ezreals E
+		{name = "deceive", range = 400, delay = 0.25, delay2=0.8}, --Shacos Q
+		{name = "riftwalk", range = 700, delay = 0.25, delay2=0.8},--KassadinR
+		{name = "gate", range = 5500, delay = 1.5, delay2=1.5},--Twisted fate R
+		{name = "katarinae", range = math.huge, delay = 0.25, delay2=0.8},--Katarinas E
+		{name = "elisespideredescent", range = math.huge, delay = 0.25, delay2=0.8},--Elise E
+		{name = "elisespidere", range = math.huge, delay = 0.25, delay2=0.8},--Elise insta E
+	}
 
 	return self
 end
@@ -288,7 +257,7 @@ end
 
 function VPrediction:OnNewWayPoints(NetworkID)
 	local object = objManager:GetObjectByNetworkId(NetworkID)
-	if object and object.valid and object.networkID and object.type == myHero.type then--HERO
+	if object and object.valid and object.networkID and object.type == myHero.type then
 		self.DontShootUntilNewWaypoints[NetworkID] = false
 		if self.TargetsWaypoints[NetworkID] == nil then
 			self.TargetsWaypoints[NetworkID] = {}
@@ -638,10 +607,10 @@ function VPrediction:GetBestCastPosition(unit, delay, radius, range, speed, from
 	local TargetImmobile, ImmobilePos, ImmobileCastPosition = self:IsImmobile(unit, delay, radius, speed, from, spelltype)
 	local VisibleSince = self.TargetsVisible[unit.networkID] and self.TargetsVisible[unit.networkID] or self:GetTime()
 
-	if unit.type ~= myHero.type then--minion | monster
+	if unit.type ~= myHero.type then
 		Position, CastPosition = self:CalculateTargetPosition(unit, delay, radius, speed, from, spelltype)
 		HitChance = 2
-	else  --hero
+	else
 		if self.DontShoot[unit.networkID] and self.DontShoot[unit.networkID] > self:GetTime() then
 			Position, CastPosition = Vector(unit.visionPos.x, unit.visionPos.y, unit.visionPos.z),  Vector(unit.visionPos.x, unit.visionPos.y, unit.visionPos.z)
 			HitChance = 0
@@ -674,7 +643,7 @@ function VPrediction:GetBestCastPosition(unit, delay, radius, range, speed, from
 
 		if self.ShotAtMaxRange and HitChance ~= 0 and spelltype == "circular" and (GetDistanceSqr(from, CastPosition) > range ^ 2) then
 			if GetDistanceSqr(from, Position) <= (range + radius / 1.4) ^ 2 then
-				if GetDistanceSqr(from, Position) <= range*range then
+				if GetDistanceSqr(from, Position) <= range * range then
 					CastPosition = Position
 				else
 					CastPosition = Vector(from) + range * (Vector(Position) - Vector(from)):normalized()
@@ -1172,7 +1141,7 @@ function VPrediction:OnTick()
 		for NID, TargetWaypoints in pairs(self.TargetsWaypoints) do
 			local i = 1 
 			while i <= #self.TargetsWaypoints[NID] do
-				if self.TargetsWaypoints[NID][i].time + self.WaypointsTime < self:GetTime() then
+				if self.TargetsWaypoints[NID][i]["time"] + self.WaypointsTime < self:GetTime() then
 					table.remove(self.TargetsWaypoints[NID], i)
 				else
 					i = i + 1
@@ -1325,7 +1294,3 @@ function VPrediction:CalcDamageOfAttack(source, target, spell, additionalDamage)
 	return damageMultiplier * totalDamage
 end
 --}
-
-
---UPDATEURL=
---HASH=C2AA2B465645E7AD319382B57651F84C
