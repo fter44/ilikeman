@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.44"
+local version = "0.45"
 local SCRIPT_NAME = "Riven"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -163,22 +163,26 @@ function OnLoad()
 	menu:addParam("cancel", "Animation Cancel Method", SCRIPT_PARAM_LIST, 1, { "Move","Laugh","Dance","Taunt","joke","Nothing" })
 		AddProcessSpellCallback(function(unit, spell)
 				if not unit.isMe then return end
-				if spell.name == 'RivenTriCleave' then -- _Q
-					DelayAction(function() SOWi:resetAA() end, menu.Q["q"..Q_Sequence])
-					AnimationCancel[menu.cancel]()
-				elseif spell.name == 'RivenMartyr' then -- _W				
-					 AnimationCancel[menu.cancel]()
-				elseif spell.name == 'RivenFeint'  then -- _E	
-					--OnLy To OnTick Target
-					if ValidTarget(R_ON_FLAG_TARGET,300) and R_ON_FLAG and R:IsReady() then --AUTOMATIC R
-						CAST_R1()
+				
+				
+				if menu.combo or menu.farm then
+					if spell.name == 'RivenTriCleave' then -- _Q
+						DelayAction(function() SOWi:resetAA() end, menu.Q["q"..Q_Sequence])
+						AnimationCancel[menu.cancel]()
+					elseif spell.name == 'RivenMartyr' then -- _W				
+						 AnimationCancel[menu.cancel]()
+					elseif spell.name == 'RivenFeint'  then -- _E	
+						--OnLy To OnTick Target
+						if ValidTarget(R_ON_FLAG_TARGET,300) and R_ON_FLAG and R:IsReady() then --AUTOMATIC R
+							CAST_R1()
+						end
+						if ValidTarget(Target) and W:IsReady() and CAST_W(Target)==SPELLSTATE_TRIGGERED then												
+							IM:CAST_OFFENSIVE_AD(Target,true)--CAST_TIAMAT(Target)		
+						end
+						AnimationCancel[menu.cancel]()
+					elseif spell.name == 'RivenFengShuiEngine' then -- _R first cast				
+						AnimationCancel[menu.cancel]()
 					end
-					if ValidTarget(Target) and W:IsReady() and CAST_W(Target)==SPELLSTATE_TRIGGERED then												
-						IM:CAST_OFFENSIVE_AD(Target,true)--CAST_TIAMAT(Target)		
-					end
-					AnimationCancel[menu.cancel]()
-				elseif spell.name == 'RivenFengShuiEngine' then -- _R first cast				
-					AnimationCancel[menu.cancel]()
 				end
 			end)
 	
