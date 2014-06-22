@@ -1,7 +1,7 @@
 if myHero.charName ~= "Ahri" then return end
 
 
-local version = "0.21"
+local version = "0.22"
 local SCRIPT_NAME = "Ahri"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ if AUTOUPDATE then
 end
 
 local RequireI = Require("SourceLib")
-RequireI:Add("VPrediction", 	"https://raw.github.com/fter44/ilikeman/master/common/LEVEL.lua")
+RequireI:Add("VPrediction", 	"https://raw.github.com/fter44/ilikeman/master/common/VPrediction.lua")
 RequireI:Add("FTER_SOW", 		"https://raw.github.com/fter44/ilikeman/master/common/FTER_SOW.lua")
 RequireI:Add("DRAW_POS_MANAGER","https://raw.github.com/fter44/ilikeman/master/common/DRAW_POS_MANAGER.lua")
 RequireI:Add("ITEM_MANAGER", 	"https://raw.github.com/fter44/ilikeman/master/common/ITEM_MANAGER.lua")
