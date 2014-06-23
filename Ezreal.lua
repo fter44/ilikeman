@@ -162,7 +162,7 @@ function OnTick2()
 	for _, enemy in pairs(GetEnemyHeroes()) do
 		if ValidTarget(enemy) then		
 			if  menu.Q.ks and Q:IsReady() and getDmg("Q", enemy, myHero) > enemy.health and CAST_Q(enemy) then
-			elseif  menu.W.ks and W:IsReady() and getDmg("W", enemy, myHero) > enemy.health CAST_W(enemy,true) then
+			elseif  menu.W.ks and W:IsReady() and getDmg("W", enemy, myHero) > enemy.health and CAST_W(enemy,true) then
 			elseif R:IsReady() and getDmg("R", enemy, myHero) > enemy.health then
 				if menu.R.ks then
 					CAST_R(enemy,true)
