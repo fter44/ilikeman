@@ -1,11 +1,12 @@
 --[[
 Change-log
-	0.11 Option to Prioritize Enemy than Minion added
-
+	0.1
+		0.11 Option to Prioritize Enemy than Minion added
+		0.12 AA fire time limit slice value width increased(If u feel it cancels AA so hard,increase the value)
 ]]
 
 
-local version = "0.11"
+local version = "0.12"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/FTER_SOW.lua".."?rand="..math.random(1,10000)
@@ -112,8 +113,11 @@ function SOW:__init(VP)
 			return a.maxHealth > b.maxHealth --SUPER > CANNON > MAGIC > MELEE
 		end
 	end
+	local function JUNGLE_SORT_AD_ASC(a,b)
+		return a.totalDamage > b.totalDamage
+	end
 	self.EnemyMinions = minionManager(MINION_ENEMY, 2000, myHero, MINION_SORT_PIRCE_HEALTH_ASC)
-	self.JungleMinions = minionManager(MINION_JUNGLE, 2000, myHero, MINION_SORT_MAXHEALTH_DEC)
+	self.JungleMinions = minionManager(MINION_JUNGLE, 2000, myHero, JUNGLE_SORT_AD_ASC)
 	self.OtherMinions = minionManager(MINION_OTHER, 2000, myHero, MINION_SORT_HEALTH_ASC)
 	
 	GetSave("SOW").FarmDelay = GetSave("SOW").FarmDelay and GetSave("SOW").FarmDelay or 0
@@ -192,7 +196,7 @@ function SOW:LoadToMenu(m, STS)
 
 	
 	self.Menu:addParam("CPriority", "Prioritize harass enemy ", SCRIPT_PARAM_ONOFF, true )--fter44
-	self.Menu:addParam("ALimit", "AA Fire Time Limit", SCRIPT_PARAM_SLICE, 0.10,  0.010, 0.15,2)--fter44
+	self.Menu:addParam("ALimit", "AA Fire Time Limit", SCRIPT_PARAM_SLICE, self:GetLatency(),  0.01, 0.5,2)--fter44
 	
 	self.Menu:addParam("Hotkeys", "", SCRIPT_PARAM_INFO, "")
 
