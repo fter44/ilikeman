@@ -1,6 +1,6 @@
 if myHero.charName ~= "Ezreal" then return end
 
-local version = "0.22"
+local version = "0.23"
 local SCRIPT_NAME = "Ezreal"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -161,12 +161,8 @@ function OnTick2()
 	--KS		
 	for _, enemy in pairs(GetEnemyHeroes()) do
 		if ValidTarget(enemy) then		
-			if  menu.Q.ks and Q:IsReady() and getDmg("Q", enemy, myHero) > enemy.health then
-				CAST_Q(enemy)
-				goto continue
-			elseif  menu.W.ks and W:IsReady() and getDmg("W", enemy, myHero) > enemy.health then
-				CAST_W(enemy,true)
-				goto continue
+			if  menu.Q.ks and Q:IsReady() and getDmg("Q", enemy, myHero) > enemy.health and CAST_Q(enemy) then
+			elseif  menu.W.ks and W:IsReady() and getDmg("W", enemy, myHero) > enemy.health CAST_W(enemy,true) then
 			elseif R:IsReady() and getDmg("R", enemy, myHero) > enemy.health then
 				if menu.R.ks then
 					CAST_R(enemy,true)
@@ -329,7 +325,7 @@ function OnDraw2()
 		DrawText3D("Current P_BUFF_STACK status is " .. tostring(P_BUFF_STACK), myHero.x+200, myHero.y, myHero.z+200, 25,  ARGB(255,255,0,0), true)
 	end
 	--R TARGET
-	if ValidTarget(R_KS_Target) and R:IsReady() then
+	if ValidTarget(R_Q_Target) and R:IsReady() then
 		DrawText3D("R KILLABLE",R_KS_Target.x,0,R_KS_Target.z,20,ARGB(255,255,0,0),true)
 	end
 	--TARGET
