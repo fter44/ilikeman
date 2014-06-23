@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.45"
+local version = "0.46"
 local SCRIPT_NAME = "Riven"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -107,16 +107,11 @@ function OnLoad()
 		STS:AddToMenu(menu.STS)	
 	--SKILLS
 	menu:addSubMenu("Q","Q")
-		menu.Q:addParam("cast","cast Q to Target",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A"))
+		menu.Q:addParam("cast","CAST@Q",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A")) menu.Q:permaShow("cast")
 		menu.Q:addParam("ks","use Q for killsteal",SCRIPT_PARAM_ONOFF,true)		
 		menu.Q:addParam("farm","use Q for farm",SCRIPT_PARAM_ONOFF,true)
 		menu.Q:addParam("aaCombo","use Q After AA combo",SCRIPT_PARAM_ONOFF,true)
 		menu.Q:addParam("aaFarm","use Q After AA farm",SCRIPT_PARAM_ONOFF,true)
-		--[[
-		menu.Q:addParam("reset","Q AAreset@Combo",SCRIPT_PARAM_ONOFF,true)
-		menu.Q:addParam("resetT","Q AAreset@Tower/Inhib/Nexus",SCRIPT_PARAM_ONOFF,true)
-		menu.Q:addParam("resetJ","Q AAreset@Jungle",SCRIPT_PARAM_ONOFF,true)
-		]]
 			SOWi:RegisterAfterAttackCallback(function(target,mode)				
 				if Q:IsReady() and ((menu.combo and menu.Q.aaCombo) or (menu.farm and menu.Q.aaFarm)) then
 					if target.type==myHero.type then
@@ -125,14 +120,14 @@ function OnLoad()
 						Q:Cast(mousePos.x,mousePos.z)
 					end
 				elseif menu.combo and not W:IsReady() and not E:IsReady() then
-					IM:CAST_OFFENSIVE_AD(target,true)--CAST_TIAMAT(target)
+					IM:CAST_OFFENSIVE_AD(target,true)
 				end
 			end)
 		menu.Q:addParam("q0", "Q1 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
 		menu.Q:addParam("q1", "Q2 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
 		menu.Q:addParam("q2", "Q3 AA reset Delay", SCRIPT_PARAM_SLICE, 0.25, 0.1,0.5,2)
-		menu.Q:addParam("default","Set Default Delay",SCRIPT_PARAM_ONOFF,false,_,_,_,function(change)
-			if change==true then
+		menu.Q:addParam("default","Set Default Delay",SCRIPT_PARAM_ONOFF,false)AddTickCallback(function()
+			if menu.Q.default then
 				menu.Q.default=false
 				menu.Q.q1,menu.Q.q2,menu.Q.q3=0.25,0.25,0.25
 			end
@@ -149,7 +144,7 @@ function OnLoad()
 		menu.W:addParam("ks","use W for killsteal",SCRIPT_PARAM_ONOFF,true)
 		menu.W:addParam("tiamat","use W after tiamat",SCRIPT_PARAM_ONOFF,true)
 	menu:addSubMenu("E","E")
-		menu.E:addParam("cast","cast E to Target",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A"))
+		menu.E:addParam("cast","cast E to Target",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A")) menu.E:permaShow("cast")
 		menu.E:addParam("tiamat","use timat after E",SCRIPT_PARAM_ONOFF,true)
 		menu.E:addParam("ult","activate R after E(when killlable)",SCRIPT_PARAM_ONOFF,true)
 	menu:addSubMenu("R","R")
@@ -177,7 +172,7 @@ function OnLoad()
 							CAST_R1()
 						end
 						if ValidTarget(Target) and W:IsReady() and CAST_W(Target)==SPELLSTATE_TRIGGERED then												
-							IM:CAST_OFFENSIVE_AD(Target,true)--CAST_TIAMAT(Target)		
+							IM:CAST_OFFENSIVE_AD(Target,true)
 						end
 						AnimationCancel[menu.cancel]()
 					elseif spell.name == 'RivenFengShuiEngine' then -- _R first cast				
@@ -196,11 +191,10 @@ function OnLoad()
 		DManager:CreateCircle(myHero, SPELL_DATA[_W].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"W range", true, true, true)
 		DManager:CreateCircle(myHero, SPELL_DATA[_E].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"E range", true, true, true)
 		DManager:CreateCircle(myHero, SPELL_DATA[_R].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"R range", true, true, true)
---		menu.Drawings:addSubMenu("KillTexts","KillTexts")
---			KILLTEXTS=TEXTPOS_HPBAR(menu.Drawings.KillTexts,18,0,30)
-	menu:addParam('combo', 'combo', SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
-	menu:addParam('farm',  'farm', SCRIPT_PARAM_ONKEYDOWN, false, string.byte("V"))
-	menu:addParam('flee',  'flee', SCRIPT_PARAM_ONKEYDOWN, false, string.byte("T"))
+		
+	menu:addParam('combo', 'combo', SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C")) 	menu:permaShow('combo')
+	menu:addParam('farm',  'farm', SCRIPT_PARAM_ONKEYDOWN, false, string.byte("V"))		menu:permaShow('farm')
+	menu:addParam('flee',  'flee', SCRIPT_PARAM_ONKEYDOWN, false, string.byte("T"))		menu:permaShow('flee')
 	
 	AddTickCallback(OnTick2)
 end
@@ -284,14 +278,7 @@ function OnTick2()
 			end
 		end
 	end
-end
-
-function OnDash(unit, dash)
-	if unit.isMe then
-		--print("E DASH:"..dash.speed)
-		--E.speed =dash.speed
-	end
-end
+end 
 local P_Stack=0
 local P_BuffName="rivenpassiveaaboost"
 local Q_BuffName="RivenTriCleave" 
