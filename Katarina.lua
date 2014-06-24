@@ -2,7 +2,7 @@ if myHero.charName ~= "Katarina" then return end
 
 
 
-local version = "0.28"
+local version = "0.29"
 local SCRIPT_NAME = "Katarina"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -582,11 +582,11 @@ end
 function Enable_ALL()
 	R_ON = false
 	SOWi:EnableAttacks()
-	self.Move = true	
+	SOWi.Move = true	
 end
 function Disable_ALL()
 	R_ON = true
 	SOWi:DisableAttacks()
-	self.Move = false
+	SOWi.Move = false
 end
 end
