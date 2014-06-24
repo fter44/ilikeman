@@ -2,7 +2,7 @@ if myHero.charName ~= "Katarina" then return end
 
 
 
-local version = "0.29"
+local version = "0.291"
 local SCRIPT_NAME = "Katarina"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -294,6 +294,7 @@ function CAST_R(target,time) --full hit time==2.5
 	end
 	time=time or 0
 	if time==0 or GET_R_HIT(target)>time then
+		Disable_ALL()
 		return R:Cast()==SPELLSTATE_TRIGGERED
 	end
 end
