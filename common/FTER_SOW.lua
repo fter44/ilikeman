@@ -196,7 +196,7 @@ function SOW:LoadToMenu(m, STS)
 
 	
 	self.Menu:addParam("CPriority", "Prioritize harass enemy ", SCRIPT_PARAM_ONOFF, true )--fter44
-	self.Menu:addParam("ALimit", "AA Fire Time Limit", SCRIPT_PARAM_SLICE, self:GetLatency(),  0.01, 0.5,2)--fter44
+	self.Menu:addParam("ALimit", "AA Fire Time Limit", SCRIPT_PARAM_SLICE, self:Latency(),  0.01, 0.5,2)--fter44
 	
 	self.Menu:addParam("Hotkeys", "", SCRIPT_PARAM_INFO, "")
 
