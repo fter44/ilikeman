@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lucian" then return end
 
-local version = "0.22"
+local version = "0.23"
 local SCRIPT_NAME = "Lucian"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -338,7 +338,7 @@ function CAST_Q(Target,forceNoExtend)
 		return Q1:Cast(Target)
 	elseif Q2:IsInRange(Target) and not forceNoExtend then
 		local _, hitChance, position=Q2:GetPrediction(Target)
-		if hitChance>1 then
+		if hitChance and hitChance>1 then
 			for _,c in pairs(GetEnemyHeroes()) do --HERO
 				if IsContainPoint(myHero,c,Q2.range,Q2.width+VP:GetHitBox(Target),position) then
 					return Q2:__Cast(c)

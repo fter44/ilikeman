@@ -2,7 +2,7 @@ if myHero.charName ~= "Katarina" then return end
 
 
 
-local version = "0.27"
+local version = "0.28"
 local SCRIPT_NAME = "Katarina"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ function OnTick2()
 	
 	if menu.R.stop2 and R_ON and CountEnemyHeroInRange(SPELL_DATA[_R].range+100)==0 then
 		Print("R STOP - no enemies near")
-		R_ON=false
+		Enable_ALL()
 	end
 	if R_ON then
 		return
@@ -464,41 +464,41 @@ function OnSendPacket(p)
 			end
 		end
 	elseif p.header == Packet.headers.S_CAST and Packet(p):get('spellId')==_R then 
-		R_ON = true
+		Disable_ALL()
 	end
 end
 local R_BUFF_NAME="katarinarsound"
 function OnGainBuff(unit, buff)
 	if unit.isMe and buff.name == R_BUFF_NAME then
-		R_ON =  true
+		Disable_ALL()
 	end
 end
 function OnLoseBuff(unit, buff)
 	if unit.isMe and buff.name == R_BUFF_NAME then
-		R_ON =  false
+		Enable_ALL()
 	end
 end
 local R_NAME="KatarinaR"
 function OnProcessSpell(unit,spell)
 	if unit.isMe then
 		if spell.name==R_NAME then
-			R_ON = true			
+			Disable_ALL()
 		end
 	end
 end 
 function OnAnimation(unit, animationName)
 	if unit == myHero then
 		if animationName == "Spell4" then 
-			R_ON = true
+			Disable_ALL()
 		else
-			R_ON = false
+			Enable_ALL()
 		end
 	end
 end
 function OnWndMsg(msg, key)
 	if msg == WM_RBUTTONDOWN and R_ON then
 		Print("R Stop - Mouse R button")
-		R_ON=false
+		Enable_ALL()
 	end
 end
 end
@@ -578,5 +578,15 @@ function CountEnemyHeroInRange(range)
         end
     end
     return enemyInRange	
+end
+function Enable_ALL()
+	R_ON = false
+	SOWi:EnableAttacks()
+	self.Move = true	
+end
+function Disable_ALL()
+	R_ON = true
+	SOWi:DisableAttacks()
+	self.Move = false
 end
 end
