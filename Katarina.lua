@@ -2,7 +2,7 @@ if myHero.charName ~= "Katarina" then return end
 
 
 
-local version = "0.25"
+local version = "0.26"
 local SCRIPT_NAME = "Katarina"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -374,55 +374,55 @@ function KS()
 	end
 
 	for _, enemy in pairs(GetEnemyHeroes()) do
-		if not ValidTarget(enemy) then return end
-		
-		local Q_MARK = (Q:IsReady() and menu.Q.ks) and getDmg("Q", enemy, myHero, 2)
-		local Qd 	 = (Q:IsReady() and menu.Q.ks) and getDmg("Q",enemy,myHero)
-		local Wd 	 = (W:IsReady() and menu.W.ks) and getDmg("W",enemy,myHero)
-		local Ed 	 = (E:IsReady() and (menu.E.ks or menu.E.cast)) and getDmg("E",enemy,myHero)
-		local Rd     = (R:IsReady() and menu.R.ks) and GET_R_REAL_DAMAGE(enemy)
-		local HP 	 = enemy.health
-		--[[
-		lib.print("----------")
-		lib.print(enemy.charName)
-		lib.print("Q_MARK : "..tostring(Q_MARK))
-		lib.print("Qd : "..tostring(Qd))
-		lib.print("Wd : "..tostring(Wd))
-		lib.print("Ed : "..tostring(Ed))
-		lib.print("Rd : "..tostring(Rd))
-		lib.print("----------")
-		--]]
-		if (Qd) and HP <= Qd and CAST_Q(enemy) then
-			--lib.print("#1")
-			goto continue
-		elseif (Wd) and HP <= Wd and CAST_W(enemy,true) then
-			--lib.print("#2")
-			goto continue
-		elseif (Ed) and HP <= Ed and CAST_E(enemy,true) then
-			--lib.print("#3")
-			goto continue			
-		elseif (Qd and Wd) and HP <= Qd+Wd and CAST_W(enemy,true) then
-			--lib.print("#4")
-			goto continue
-		elseif (Qd and Ed) and HP <= Qd+Ed and CAST_E(enemy,true) then 
-			--lib.print("#5")
-			goto continue
-		elseif (Wd and Ed) and HP <= Wd+Ed and CAST_W(enemy,true) then 
-			--lib.print("#6")
-			goto continue
-		elseif (Q_MARK and Wd and Ed) and HP <= Q_MARK+Qd+Wd+Ed and CAST_E(enemy,true) then 
-			--lib.print("#7")
-			CAST_Q(enemy)
-			goto continue
-		elseif (Rd) and HP <= Rd and CAST_R(enemy) then 
-			--lib.print("#8")
-			goto continue
-		elseif (Q_MARK and Wd and Ed and Rd) and HP<=Q_MARK+Qd+Wd+Ed+Rd and CAST_E(enemy,true) then 
-			--lib.print("#9")
-			CAST_Q(enemy)
-			CAST_W(enemy,true)
+		if ValidTarget(enemy) then 			
+			local Q_MARK = (Q:IsReady() and menu.Q.ks) and getDmg("Q", enemy, myHero, 2)
+			local Qd 	 = (Q:IsReady() and menu.Q.ks) and getDmg("Q",enemy,myHero)
+			local Wd 	 = (W:IsReady() and menu.W.ks) and getDmg("W",enemy,myHero)
+			local Ed 	 = (E:IsReady() and (menu.E.ks or menu.E.cast)) and getDmg("E",enemy,myHero)
+			local Rd     = (R:IsReady() and menu.R.ks) and GET_R_REAL_DAMAGE(enemy)
+			local HP 	 = enemy.health
+			--[[
+			lib.print("----------")
+			lib.print(enemy.charName)
+			lib.print("Q_MARK : "..tostring(Q_MARK))
+			lib.print("Qd : "..tostring(Qd))
+			lib.print("Wd : "..tostring(Wd))
+			lib.print("Ed : "..tostring(Ed))
+			lib.print("Rd : "..tostring(Rd))
+			lib.print("----------")
+			--]]
+			if (Qd) and HP <= Qd and CAST_Q(enemy) then
+				--lib.print("#1")
+				goto continue
+			elseif (Wd) and HP <= Wd and CAST_W(enemy,true) then
+				--lib.print("#2")
+				goto continue
+			elseif (Ed) and HP <= Ed and CAST_E(enemy,true) then
+				--lib.print("#3")
+				goto continue			
+			elseif (Qd and Wd) and HP <= Qd+Wd and CAST_W(enemy,true) then
+				--lib.print("#4")
+				goto continue
+			elseif (Qd and Ed) and HP <= Qd+Ed and CAST_E(enemy,true) then 
+				--lib.print("#5")
+				goto continue
+			elseif (Wd and Ed) and HP <= Wd+Ed and CAST_W(enemy,true) then 
+				--lib.print("#6")
+				goto continue
+			elseif (Q_MARK and Wd and Ed) and HP <= Q_MARK+Qd+Wd+Ed and CAST_E(enemy,true) then 
+				--lib.print("#7")
+				CAST_Q(enemy)
+				goto continue
+			elseif (Rd) and HP <= Rd and CAST_R(enemy) then 
+				--lib.print("#8")
+				goto continue
+			elseif (Q_MARK and Wd and Ed and Rd) and HP<=Q_MARK+Qd+Wd+Ed+Rd and CAST_E(enemy,true) then 
+				--lib.print("#9")
+				CAST_Q(enemy)
+				CAST_W(enemy,true)
+			end
+			::continue::
 		end
-		::continue::
 	end
 	
 	
