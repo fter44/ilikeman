@@ -1,6 +1,6 @@
 if myHero.charName ~= "Ezreal" then return end
 
-local version = "0.23"
+local version = "0.24"
 local SCRIPT_NAME = "Ezreal"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -164,8 +164,7 @@ function OnTick2()
 			if  menu.Q.ks and Q:IsReady() and getDmg("Q", enemy, myHero) > enemy.health and CAST_Q(enemy) then
 			elseif  menu.W.ks and W:IsReady() and getDmg("W", enemy, myHero) > enemy.health and CAST_W(enemy,true) then
 			elseif R:IsReady() and getDmg("R", enemy, myHero) > enemy.health then
-				if menu.R.ks then
-					CAST_R(enemy,true)
+				if menu.R.ks and CAST_R(enemy,true) then					
 				else
 					if menu.R.alert then
 						PrintAlert_T(enemy,enemy.charName.." R KILLABLE",1,0,0,255)
@@ -176,7 +175,7 @@ function OnTick2()
 		end
 		::continue::
 	end	
-	if R_KS_Target and R_KS_Target.health< getDmg("R",R_KS_Target,myHero) then
+	if ValidTarget(R_KS_Target) and R_KS_Target.health > getDmg("R",R_KS_Target,myHero) then
 		R_KS_Target=nil
 	end
 	--MANUAL CAST
@@ -197,7 +196,7 @@ function OnTick2()
 	end
 	
 	--SET TARGET	
-	Target = STS:GetTarget(SPELL_DATA[_W].range)
+	Target = STS:GetTarget(SPELL_DATA[_W].range) or STS:GetTarget(SPELL_DATA[_Q].range)
 	if not Target or not ValidTarget(Target) then return end
 
 	
@@ -229,12 +228,12 @@ function HARASS(Target)
 end
 
 --[[
-██╗  ██╗    ██╗    ██╗         ██╗     
-██║ ██╔╝    ██║    ██║         ██║     
-█████╔╝     ██║    ██║         ██║     
-██╔═██╗     ██║    ██║         ██║     
-██║  ██╗    ██║    ███████╗    ███████╗
-╚═╝  ╚═╝    ╚═╝    ╚══════╝    ╚══════╝
+?댿뻽?? ?댿뻽??   ?댿뻽??   ?댿뻽??        ?댿뻽??    
+?댿뻽???댿뻽?붴븴    ?댿뻽??   ?댿뻽??        ?댿뻽??    
+?댿뻽?댿뻽?댿븫??    ?댿뻽??   ?댿뻽??        ?댿뻽??    
+?댿뻽?붴븧?댿뻽??    ?댿뻽??   ?댿뻽??        ?댿뻽??    
+?댿뻽?? ?댿뻽??   ?댿뻽??   ?댿뻽?댿뻽?댿뻽?댿븮    ?댿뻽?댿뻽?댿뻽?댿븮
+?싢븧?? ?싢븧??   ?싢븧??   ?싢븧?먥븧?먥븧?먥븴    ?싢븧?먥븧?먥븧?먥븴
                                        
 --]]
 do
@@ -266,12 +265,10 @@ end
 
 
 --[[
- ██████╗     █████╗     ███████╗    ████████╗
-██╔════╝    ██╔══██╗    ██╔════╝    ╚══██╔══╝
-██║         ███████║    ███████╗       ██║   
-██║         ██╔══██║    ╚════██║       ██║   
-╚██████╗    ██║  ██║    ███████║       ██║   
- ╚═════╝    ╚═╝  ╚═╝    ╚══════╝       ╚═╝   
+ ?댿뻽?댿뻽?댿뻽??    ?댿뻽?댿뻽?댿븮     ?댿뻽?댿뻽?댿뻽?댿븮    ?댿뻽?댿뻽?댿뻽?댿뻽???댿뻽?붴븧?먥븧?먥븴    ?댿뻽?붴븧?먥뻽?댿븮    ?댿뻽?붴븧?먥븧?먥븴    ?싢븧?먥뻽?댿븫?먥븧???댿뻽??        ?댿뻽?댿뻽?댿뻽?댿븨    ?댿뻽?댿뻽?댿뻽?댿븮       ?댿뻽??  
+?댿뻽??        ?댿뻽?붴븧?먥뻽?댿븨    ?싢븧?먥븧?먥뻽?댿븨       ?댿뻽??  
+?싢뻽?댿뻽?댿뻽?댿븮    ?댿뻽?? ?댿뻽??   ?댿뻽?댿뻽?댿뻽?댿븨       ?댿뻽??  
+ ?싢븧?먥븧?먥븧??   ?싢븧?? ?싢븧??   ?싢븧?먥븧?먥븧?먥븴       ?싢븧??  
                                              
 --]]
 
@@ -287,11 +284,6 @@ local E_COST={90,90,90,90,90}
 local R_COST={100,100,100}
 function Is_Mana_Enough(Qc,Ec,Rc)
 	local mana=0
-	--[[
-	mana = mana + (Qc * Q_COST[Q:GetLevel()] or 0)
-	mana = mana + (Ec * 90 )
-	mana = mana + (Rc * 100)
-	]]
 	mana = mana + (Qc and Q_COST[Q:GetLevel()] or 0)
 	mana = mana + (Ec and 90 )
 	mana = mana + (Rc and 100)
@@ -304,7 +296,7 @@ function CAST_W(Target,force)--consider (Q,E,R mana cost) and (Passive Stack)
 	--local b_stack=(not menu.W.P or P_BUFF_STACK<5 )
 	--print(b_mana,b_stack)
 	if force or ((not menu.W.mana or Is_Mana_Enough(menu.W.Q,menu.W.E,menu.W.R)) and (not menu.W.P or P_BUFF_STACK<5 )) then
-		return W:Cast(Target)
+		return W:Cast(Target)==SPELLSTATE_TRIGERRED
 	end
 end
 
@@ -312,11 +304,11 @@ function CAST_R(Target,forceN,forceD)
 	if forceN then
 		R.minTargetsAoe=1
 		if forceD or (_GetDistanceSqr(Target) > menu.R.min*menu.R.min and _GetDistanceSqr(Target) < menu.R.max*menu.R.max) then
-			return R:Cast(Target)
+			return R:Cast(Target)==SPELLSTATE_TRIGERRED
 		end
 	else
 		R.minTargetsAoe=menu.R.N
-		return R:Cast(Target)
+		return R:Cast(Target)==SPELLSTATE_TRIGERRED
 	end
 end 
 function OnDraw2()
@@ -334,12 +326,12 @@ function OnDraw2()
 	end
 end
 --[[
-██████╗               ██████╗     ██╗   ██╗    ███████╗    ███████╗
-██╔══██╗              ██╔══██╗    ██║   ██║    ██╔════╝    ██╔════╝
-██████╔╝    █████╗    ██████╔╝    ██║   ██║    █████╗      █████╗  
-██╔═══╝     ╚════╝    ██╔══██╗    ██║   ██║    ██╔══╝      ██╔══╝  
-██║                   ██████╔╝    ╚██████╔╝    ██║         ██║     
-╚═╝                   ╚═════╝      ╚═════╝     ╚═╝         ╚═╝     
+?댿뻽?댿뻽?댿뻽??              ?댿뻽?댿뻽?댿뻽??    ?댿뻽??  ?댿뻽??   ?댿뻽?댿뻽?댿뻽?댿븮    ?댿뻽?댿뻽?댿뻽?댿븮
+?댿뻽?붴븧?먥뻽?댿븮              ?댿뻽?붴븧?먥뻽?댿븮    ?댿뻽??  ?댿뻽??   ?댿뻽?붴븧?먥븧?먥븴    ?댿뻽?붴븧?먥븧?먥븴
+?댿뻽?댿뻽?댿뻽?붴븴    ?댿뻽?댿뻽?댿븮    ?댿뻽?댿뻽?댿뻽?붴븴    ?댿뻽??  ?댿뻽??   ?댿뻽?댿뻽?댿븮      ?댿뻽?댿뻽?댿븮  
+?댿뻽?붴븧?먥븧??    ?싢븧?먥븧?먥븴    ?댿뻽?붴븧?먥뻽?댿븮    ?댿뻽??  ?댿뻽??   ?댿뻽?붴븧?먥븴      ?댿뻽?붴븧?먥븴  
+?댿뻽??                  ?댿뻽?댿뻽?댿뻽?붴븴    ?싢뻽?댿뻽?댿뻽?댿븫??   ?댿뻽??        ?댿뻽??    
+?싢븧??                  ?싢븧?먥븧?먥븧??     ?싢븧?먥븧?먥븧??    ?싢븧??        ?싢븧??    
                                                                    
 --]]
 do
@@ -366,12 +358,12 @@ function OnLoseBuff(unit, buff)
 end
 end 
 --[[
-███╗   ███╗    ██╗    ███████╗     ██████╗    ███████╗
-████╗ ████║    ██║    ██╔════╝    ██╔════╝    ██╔════╝
-██╔████╔██║    ██║    ███████╗    ██║         ███████╗
-██║╚██╔╝██║    ██║    ╚════██║    ██║         ╚════██║
-██║ ╚═╝ ██║    ██║    ███████║    ╚██████╗    ███████║
-╚═╝     ╚═╝    ╚═╝    ╚══════╝     ╚═════╝    ╚══════╝
+?댿뻽?댿븮   ?댿뻽?댿븮    ?댿뻽??   ?댿뻽?댿뻽?댿뻽?댿븮     ?댿뻽?댿뻽?댿뻽??   ?댿뻽?댿뻽?댿뻽?댿븮
+?댿뻽?댿뻽???댿뻽?댿뻽??   ?댿뻽??   ?댿뻽?붴븧?먥븧?먥븴    ?댿뻽?붴븧?먥븧?먥븴    ?댿뻽?붴븧?먥븧?먥븴
+?댿뻽?붴뻽?댿뻽?댿븫?댿뻽??   ?댿뻽??   ?댿뻽?댿뻽?댿뻽?댿븮    ?댿뻽??        ?댿뻽?댿뻽?댿뻽?댿븮
+?댿뻽?묅븱?댿뻽?붴븴?댿뻽??   ?댿뻽??   ?싢븧?먥븧?먥뻽?댿븨    ?댿뻽??        ?싢븧?먥븧?먥뻽?댿븨
+?댿뻽???싢븧???댿뻽??   ?댿뻽??   ?댿뻽?댿뻽?댿뻽?댿븨    ?싢뻽?댿뻽?댿뻽?댿븮    ?댿뻽?댿뻽?댿뻽?댿븨
+?싢븧??    ?싢븧??   ?싢븧??   ?싢븧?먥븧?먥븧?먥븴     ?싢븧?먥븧?먥븧??   ?싢븧?먥븧?먥븧?먥븴
                                                       
 --]]
 do
