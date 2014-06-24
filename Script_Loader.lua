@@ -80,67 +80,62 @@ function OnLoad()
 		Menu:addParam("loadtemp","Enable TEMPs",SCRIPT_PARAM_ONOFF,true,false)
 		
 		
-	--Load Scripts--
-		if	_G.Evadeee_Loaded or (not Menu.forceevadeee) then		
-		
-			--UTILS--
-			if Menu.loadutil then
-				for index,script in pairs(util_scripts) do		
-					if	Menu.utils[string.gsub(script,"[^%a%d]","")] then
-						script = FileName(script)..".lua"
-						LoadScript(Utils_PATH2..script)
-					end
-				end		
-			end
-			--Orb Walkers- "OrbWalker"..myHero.charName			
-			if Menu.loadorbw then
-				for index,script in pairs(orbwalker_scripts) do
-					if	Menu["OrbWalker"..myHero.charName][string.gsub(script,"[^%a%d]","")] then				
-						script = FileName(script)..".lua"
-						LoadScript(OrbWalker_PATH2..script)
-					end
-				end		
-			end
-			--CHAMPIONS--
-			if  Menu.loadchamp then
-				for index,script in pairs(champ_scripts) do
-					if	Menu["Champion"..myHero.charName][string.gsub(script,"[^%a%d]","")] then				
-						script = FileName(script)..".lua"
-						LoadScript(Champions_PATH2..script)
-					end
-				end if	Menu["Champion"..myHero.charName].iseries then				
-						LoadScript("iSeriesAIO-Release.lua")
-					end
-			end
-			--CHAMPION SUPPORTS--
-			if Menu.loadsup then
-				for index,script in pairs(support_scripts) do
-					if	Menu["Support"..myHero.charName][string.gsub(script,"[^%a%d]","")] then				
-						script = FileName(script)..".lua"
-						LoadScript(ChampSupports_PATH2..script)
-					end
+	--Load Scripts--		
+		--UTILS--
+		if Menu.loadutil then
+			for index,script in pairs(util_scripts) do		
+				if	Menu.utils[string.gsub(script,"[^%a%d]","")] then
+					script = FileName(script)..".lua"
+					LoadScript(Utils_PATH2..script)
 				end
-			end
-			--MMA_Plguins--
-			if Menu.loadmmap then	
-				for index,script in pairs(mmaplugin_scripts) do
-					if	Menu["MMA_Plugin"..myHero.charName][string.gsub(script,"[^%a%d]","")] then					
-						script = FileName(script)..".lua"
-						LoadScript(MMAplugin_PATH2..script)
-					end
-				end
-			end	
-			--Temps--
-			if Menu.loadtemp then	
-				for index,script in pairs(temp_scripts) do
-					if	Menu["TEMP"][string.gsub(script,"[^%a%d]","")] then					
-						script = FileName(script)..".lua"
-						LoadScript(Temp_PATH2..script)
-					end
-				end
-			end	
-		else 
-			print("Evadeee not loaded")
+			end		
 		end
+		--Orb Walkers- "OrbWalker"..myHero.charName			
+		if Menu.loadorbw then
+			for index,script in pairs(orbwalker_scripts) do
+				if	Menu["OrbWalker"..myHero.charName][string.gsub(script,"[^%a%d]","")] then				
+					script = FileName(script)..".lua"
+					LoadScript(OrbWalker_PATH2..script)
+				end
+			end		
+		end
+		--CHAMPIONS--
+		if  Menu.loadchamp then
+			for index,script in pairs(champ_scripts) do
+				if	Menu["Champion"..myHero.charName][string.gsub(script,"[^%a%d]","")] then				
+					script = FileName(script)..".lua"
+					LoadScript(Champions_PATH2..script)
+				end
+			end if	Menu["Champion"..myHero.charName].iseries then				
+					LoadScript("iSeriesAIO-Release.lua")
+				end
+		end
+		--CHAMPION SUPPORTS--
+		if Menu.loadsup then
+			for index,script in pairs(support_scripts) do
+				if	Menu["Support"..myHero.charName][string.gsub(script,"[^%a%d]","")] then				
+					script = FileName(script)..".lua"
+					LoadScript(ChampSupports_PATH2..script)
+				end
+			end
+		end
+		--MMA_Plguins--
+		if Menu.loadmmap then	
+			for index,script in pairs(mmaplugin_scripts) do
+				if	Menu["MMA_Plugin"..myHero.charName][string.gsub(script,"[^%a%d]","")] then					
+					script = FileName(script)..".lua"
+					LoadScript(MMAplugin_PATH2..script)
+				end
+			end
+		end	
+		--Temps--
+		if Menu.loadtemp then	
+			for index,script in pairs(temp_scripts) do
+				if	Menu["TEMP"][string.gsub(script,"[^%a%d]","")] then					
+					script = FileName(script)..".lua"
+					LoadScript(Temp_PATH2..script)
+				end
+			end
+		end	
 	end	
 end
