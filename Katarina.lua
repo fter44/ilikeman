@@ -2,7 +2,7 @@ if myHero.charName ~= "Katarina" then return end
 
 
 
-local version = "0.24"
+local version = "0.25"
 local SCRIPT_NAME = "Katarina"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -182,10 +182,12 @@ function OnTick2()
 
 	
 	if menu.R.stop2 and R_ON and CountEnemyHeroInRange(SPELL_DATA[_R].range+100)==0 then
-		--print("R STOP2")
+		Print("R STOP - no enemies near")
 		R_ON=false
 	end
-
+	if R_ON then
+		return
+	end
 	
 	if menu.farm then
 		FARM()
@@ -452,7 +454,7 @@ function OnSendPacket(p)
 				p:Block()
 				return
 			else
-				--print("R STOP1")
+				Print("R STOP - KS")
 				return
 			end
 		end
