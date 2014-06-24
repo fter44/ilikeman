@@ -1,7 +1,7 @@
 if myHero.charName ~= "Diana" then return end
 
 
-local version = "0.22"
+local version = "0.23"
 local SCRIPT_NAME = "Diana"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -204,9 +204,6 @@ function OnTick2()
 	Target = STS:GetTarget(SPELL_DATA[_R].range) or STS:GetTarget(SPELL_DATA[_Q].range) or STS:GetTarget(SPELL_DATA[_E].range)
 	if not Target or not ValidTarget(Target) then return end 
 	
-	if R:IsReady() then
-		CAST_R(Target)
-	end
 	
 	if menu.combo then		
 		if Q:IsReady() and menu.Q.combo then
