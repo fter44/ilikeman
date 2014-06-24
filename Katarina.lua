@@ -2,7 +2,7 @@ if myHero.charName ~= "Katarina" then return end
 
 
 
-local version = "0.26"
+local version = "0.27"
 local SCRIPT_NAME = "Katarina"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -449,15 +449,22 @@ function OnSendPacket(p)
 	if R_ON then
 		if (p.header == Packet.headers.S_MOVE) then
 			p:Block()
-		elseif (p.header == Packet.headers.S_CAST and (Packet(p):get('spellId') ~= SUMMONER_1 and Packet(p):get('spellId') ~= SUMMONER_2)) then
-			if KS_R_STOP==false then				
-				p:Block()
+		elseif p.header == Packet.headers.S_CAST then 
+			local packet = Packet(p)
+			if packet:get('spellId') == SUMMONER_1 or packet:get('spellId') == SUMMONER_2 then --can use summoner spell while channeling
 				return
-			else
-				Print("R STOP - KS")
-				return
+			else			
+				if KS_R_STOP==false then				
+					p:Block()
+					return
+				else
+					Print("R STOP - KS")
+					return
+				end
 			end
 		end
+	elseif p.header == Packet.headers.S_CAST and Packet(p):get('spellId')==_R then 
+		R_ON = true
 	end
 end
 local R_BUFF_NAME="katarinarsound"
@@ -490,6 +497,7 @@ function OnAnimation(unit, animationName)
 end
 function OnWndMsg(msg, key)
 	if msg == WM_RBUTTONDOWN and R_ON then
+		Print("R Stop - Mouse R button")
 		R_ON=false
 	end
 end
