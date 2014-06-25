@@ -1,6 +1,6 @@
 if myHero.charName ~= "Riven" then return end
 
-local version = "0.46"
+local version = "0.47"
 local SCRIPT_NAME = "Riven"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ local SPELL_DATA = { [_Q  ] = { skillshotType = SKILLSHOT_CONE,		range = 260, sp
 					 [_W  ] = { skillshotType = nil, 				range = 250},
 					 [_RW ] = { skillshotType = nil, 				range = 270},--RW
 					 [_E  ] = { skillshotType = SKILLSHOT_LINEAR,	range = 325, speed = 1235, width = 100, delay=0.25},
-					 [_R  ] = { skillshotType = SKILLSHOT_CONE, 	range = 900, speed = 2000, width = 45*math.pi/180  , delay=0.25},
+					 [_R  ] = { skillshotType = SKILLSHOT_CONE, 	range = 900, speed = 2000, width = 45*0.5  , delay=0.25},
 }
 
 
