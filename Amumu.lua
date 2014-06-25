@@ -2,7 +2,7 @@ if myHero.charName ~= "Amumu" then return end
 
 
 
-local version = "0.22"
+local version = "0.23"
 local SCRIPT_NAME = "Amumu"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -280,6 +280,11 @@ function CAST_W(target,force)--8 mana per seec
 		end
 	end
 end
+function CAST_W_OFF()
+	if W_ON then
+		W:Cast()--OFF
+	end
+end
 function CAST_E(target,force)
 	local pos = VP:GetPredictedPos(target, SPELL_DATA[_E].delay, SPELL_DATA[_E].speed, myHero)	
 	if E:IsInRangeAdv(pos) then
@@ -484,6 +489,8 @@ function JUNGLE()
 		if menu.E.jungle then
 			CAST_E(target)
 		end
+	else
+		CAST_W_OFF()
 	end
 end
 function CountEnemyHeroInRange(range)
