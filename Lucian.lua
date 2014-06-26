@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lucian" then return end
 
-local version = "0.23"
+local version = "0.24"
 local SCRIPT_NAME = "Lucian"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ local LastSpellCast=0
 
 local _Q1,_Q2=_Q,_PASIVE+1
 local SPELL_DATA = { 
-	[_Q1 ] = { skillshotType = nil				 ,	range = 0650, speed = math.huge, width = 065, delay=0.35},
+	[_Q1 ] = { skillshotType = nil				 ,	range = 0550, speed = math.huge, width = 065, delay=0.35},--650 in visual
 	[_Q2 ] = { skillshotType = SKILLSHOT_LINEAR	 ,	range = 1100, speed = math.huge, width = 065, delay=0.35},
 	[_W  ] = { skillshotType = SKILLSHOT_LINEAR,	range = 1000, speed = 1600     , width = 055, delay=0.30},	
 	[_R  ] = { skillshotType = SKILLSHOT_LINEAR  ,  range = 1400, speed = 2800     , width = 100, delay=0.00},
