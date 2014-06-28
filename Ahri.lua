@@ -1,7 +1,7 @@
 if myHero.charName ~= "Ahri" then return end
 
 
-local version = "0.22"
+local version = "0.23"
 local SCRIPT_NAME = "Ahri"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
