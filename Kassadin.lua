@@ -65,7 +65,7 @@ local Ecast=false
 
 function OnLoad()
 	VP = VPrediction()	
-	SOWi = SOW(VP)	SPELL_DATA[_W].range=SOWi:MyRange()+50
+	SOWi = FTER_SOW(VP)	SPELL_DATA[_W].range=SOWi:MyRange()+50
 	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC)
 	Q = Spell(_Q,SPELL_DATA[_Q].range)
 	W = Spell(_W,SPELL_DATA[_W].range)

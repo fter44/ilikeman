@@ -145,9 +145,9 @@ function Load_Menu()
 	return true
 end
 function SetLibrary()	
-	VP = VPrediction()	SOWi = SOW(VP)	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC) 
+	VP = VPrediction()	SOWi = FTER_SOW(VP)	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC) 
 	
-	function SOW:BonusDamage(minion)
+	function FTER_SOW:BonusDamage(minion)
 		local damage={20 , 25 , 30 , 35 , 40 , 50 , 60 , 70 , 80 , 90 , 105 , 120 , 135 , 155 , 175 , 200 , 225 , 250}-- (+ 80% AP)
 		if P_ON then
 			return damage[myHero.level]+0.8*myHero.ap
@@ -445,7 +445,7 @@ function FARM()
 	SOWi.EnemyMinions:update()
 	for _, minion in ipairs(SOWi.EnemyMinions.objects) do	
 		local time = SOWi:WindUpTime(true) + GetDistance(minion.visionPos, myHero.visionPos) / SOWi.ProjectileSpeed - 0.07
-		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("FTER_SOW").FarmDelay / 1000)
 		if SOWi:ValidTarget(minion) and SOWi:GetState()==0 and not( PredictedHealth < VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + SOWi:BonusDamage(minion) and SOWi:CanAttack()==true ) and ( 
 			( Q:IsReady() and getDmg("Q",minion,myHero)>=minion.health and menu.Q.farm and CAST_Q(minion) ) or ( W:IsReady() and getDmg("W",minion,myHero)>=minion.health and menu.W.farm and CAST_W(minion) )
 			or ( R:IsReady() and getDmg("R",minion,myHero)>=minion.health and (menu.R.farm or menu.R.cast) and CAST_R(minion) ) )
@@ -458,7 +458,7 @@ function LANECLEAR()
 	SOWi.EnemyMinions:update()
 	for _, minion in ipairs(SOWi.EnemyMinions.objects) do	
 		local time = SOWi:WindUpTime(true) + GetDistance(minion.visionPos, myHero.visionPos) / SOWi.ProjectileSpeed - 0.07
-		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("FTER_SOW").FarmDelay / 1000)
 		if not( SOWi:ValidTarget(minion) and PredictedHealth < VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + SOWi:BonusDamage(minion) and SOWi:CanAttack()==true ) and ( 
 			( Q:IsReady() and getDmg("Q",minion,myHero)>=minion.health and menu.Q.laneclear and CAST_Q(minion) ) or ( W:IsReady() and getDmg("W",minion,myHero)>=minion.health and menu.W.laneclear and CAST_W(minion) )
 			or ( R:IsReady() and getDmg("R",minion,myHero)>=minion.health and (menu.R.laneclear or menu.R.cast) and CAST_R(minion) ) )

@@ -89,7 +89,7 @@ function Init()
 		return rangeA*rangeA >= _GetDistanceSqr(target, from or self.sourcePosition)
 	end
 	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC)
-	SOWi = SOW(VP)
+	SOWi = FTER_SOW(VP)
 		SOWi:RegisterAfterAttackCallback(AfterAttack)
 	
 	--Q
@@ -217,11 +217,6 @@ function OnTick2()
 	end
 	--SET TARGET	
 	Target = STS:GetTarget(SPELL_DATA[_E].range) or STS:GetTarget(SPELL_DATA[_Q1].range) or STS:GetTarget(SPELL_DATA[_Q2].range)
-	if not Target or not ValidTarget(Target) then
-		SOW:ForceTarget(nil)		
-		return 
-	end
-	
 	
 	if menu.Combo then
 		if P_ON and menu.P.saveC then return end
@@ -237,8 +232,6 @@ function OnTick2()
 		elseif W:IsReady() and menu.W.harass then
 			W:Cast(Target)
 		end
-	else
-		SOW:ForceTarget(nil)		
 	end
 end
 
@@ -304,7 +297,7 @@ function OnLoseBuff(unit, buff)
 end
 
 
-function SOW:BonusDamage(minion)
+function FTER_SOW:BonusDamage(minion)
 	if P_ON then
 		return myHero:CalcDamage(minion,myHero.totalDamage) --100% for minion
 	end

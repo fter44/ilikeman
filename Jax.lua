@@ -52,7 +52,7 @@ local SPELL_DATA = { [_Q] = { skillshotType = nil, range = 700},
 }
 function OnLoad()
 	VP = VPrediction()	
-	SOWi = SOW(VP)
+	SOWi = FTER_SOW(VP)
 	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC)
 	Q = Spell(_Q,SPELL_DATA[_Q].range)
 	W = Spell(_W,SPELL_DATA[_W].range)
@@ -261,7 +261,7 @@ function OnLoseBuff(unit,buff)
 	end
 end
 
-function SOW:BonusDamage(minion) 
+function FTER_SOW:BonusDamage(minion) 
 	local BONUS=0
 	if myHero:GetSpellData(_W).level > 0 and myHero:CanUseSpell(_W) == SUPRESSED then ----35*Wlvl+5+.6*ap
 		BONUS = BONUS + myHero:CalcMagicDamage(minion, ((35 * myHero:GetSpellData(_W).level) + 5 ) + myHero.ap*.6 )			

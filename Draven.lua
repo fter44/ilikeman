@@ -1,7 +1,7 @@
 if myHero.charName ~= "Draven" then return end
 
 
-local version = "0.23"
+local version = "0.24"
 local SCRIPT_NAME = "Draven"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -84,14 +84,14 @@ function OnLoseBuff(unit,buff)
 end
 function OnUpdateBuff(unit,buff) if unit.isMe then	if buff.name==Q_BUFF_NAME then Q_BUFF=true	Q_STACK=buff.stack end end end
 function SetLibrary()	
-	VP = VPrediction()	SOWi = SOW(VP)	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC) 
+	VP = VPrediction()	SOWi = FTER_SOW(VP)	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC) 
 	
 	SOWi:RegisterBeforeAttackCallback(function(t)
 		if Q:IsReady() and Q_STACK==0 and ((menu.combo and menu.Q.combo)or(menu.harass and menu.Q.harass)or(menu.farm and menu.Q.farm)or(menu.laneclear and menu.Q.laneclear)) then
 			Q:Cast()
 		end
 	end)
-	function SOW:BonusDamage(minion)
+	function FTER_SOW:BonusDamage(minion)
 		local BONUS=0
 		if Q_STACK>0 then
 			BONUS = myHero:CalcDamage(minion, myHero.totalDamage) * (0.3 + (0.10 * myHero:GetSpellData(_Q).level))

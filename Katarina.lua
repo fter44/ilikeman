@@ -145,9 +145,9 @@ function Load_Menu()
 	menu:addParam("jungle", "jungle", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('V'))		menu:permaShow("jungle")
 end
 function SetLibrary()	
-	VP = VPrediction()	SOWi = SOW(VP)	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC) 
+	VP = VPrediction()	SOWi = FTER_SOW(VP)	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC) 
 	
-	function SOW:BonusDamage(minion) --MARK MAGIC DAMAGE: 15 / 30 / 45 / 60 / 75 (+ 15% AP)
+	function FTER_SOW:BonusDamage(minion) --MARK MAGIC DAMAGE: 15 / 30 / 45 / 60 / 75 (+ 15% AP)
 		local BONUS=0
 		if IsQBuffed then
 			BONUS = myHero:CalcMagicDamage(minion, myHero:GetSpellData(_Q).level*15 + 0.15*myHero.ap   )
@@ -535,7 +535,7 @@ function FARM()
 	SOWi.EnemyMinions:update()
 	for _, minion in ipairs(SOWi.EnemyMinions.objects) do	
 		local time = SOWi:WindUpTime(true) + GetDistance(minion.visionPos, myHero.visionPos) / SOWi.ProjectileSpeed - 0.07
-		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("FTER_SOW").FarmDelay / 1000)
 		if SOWi:ValidTarget(minion) and not( PredictedHealth < VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + SOWi:BonusDamage(minion) and SOWi:CanAttack()==true ) and ( 
 			( Q:IsReady() and getDmg("Q",minion,myHero)>=minion.health and menu.Q.farm and CAST_Q(minion) ) or ( W:IsReady() and getDmg("W",minion,myHero)>=minion.health and menu.W.farm and CAST_W(minion) )
 			or ( E:IsReady() and getDmg("E",minion,myHero)>=minion.health and menu.E.farm and CAST_E(minion) ) )
@@ -548,7 +548,7 @@ function LANECLEAR()
 	SOWi.EnemyMinions:update()
 	for _, minion in ipairs(SOWi.EnemyMinions.objects) do	
 		local time = SOWi:WindUpTime(true) + GetDistance(minion.visionPos, myHero.visionPos) / SOWi.ProjectileSpeed - 0.07
-		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		local PredictedHealth = SOWi.VP:GetPredictedHealth(minion, time, GetSave("FTER_SOW").FarmDelay / 1000)
 		if not( SOWi:ValidTarget(minion) and PredictedHealth < VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + SOWi:BonusDamage(minion) and SOWi:CanAttack()==true ) and ( 
 			( Q:IsReady() and getDmg("Q",minion,myHero)>=minion.health and menu.Q.laneclear and CAST_Q(minion) ) or ( W:IsReady() and getDmg("W",minion,myHero)>=minion.health and menu.W.laneclear and CAST_W(minion) )
 			or ( E:IsReady() and getDmg("E",minion,myHero)>=minion.health and menu.E.laneclear and CAST_E(minion) ) )

@@ -6,7 +6,7 @@ Change-log
 ]]
 
 
-local version = "0.12"
+local version = "0.13"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/fter44/ilikeman/master/common/FTER_SOW.lua".."?rand="..math.random(1,10000)
@@ -33,9 +33,9 @@ if AUTOUPDATE then
 end
 
 
-class "SOW"
-function SOW:__init(VP)
-	_G.SOWLoaded = true
+class "FTER_SOW"
+function FTER_SOW:__init(VP)
+	_G.FTER_SOWLoaded = true
 
 	self.ProjectileSpeed = myHero.range > 300 and VP:GetProjectileSpeed(myHero) or math.huge
 	self.BaseWindupTime = 3
@@ -120,12 +120,12 @@ function SOW:__init(VP)
 	self.JungleMinions = minionManager(MINION_JUNGLE, 2000, myHero, JUNGLE_SORT_AD_ASC)
 	self.OtherMinions = minionManager(MINION_OTHER, 2000, myHero, MINION_SORT_HEALTH_ASC)
 	
-	GetSave("SOW").FarmDelay = GetSave("SOW").FarmDelay and GetSave("SOW").FarmDelay or 0
-	GetSave("SOW").ExtraWindUpTime = GetSave("SOW").ExtraWindUpTime and GetSave("SOW").ExtraWindUpTime or 50
-	GetSave("SOW").Mode3 = GetSave("SOW").Mode3 and GetSave("SOW").Mode3 or string.byte("X")
-	GetSave("SOW").Mode2 = GetSave("SOW").Mode2 and GetSave("SOW").Mode2 or string.byte("V")
-	GetSave("SOW").Mode1 = GetSave("SOW").Mode1 and GetSave("SOW").Mode1 or string.byte("C")
-	GetSave("SOW").Mode0 = GetSave("SOW").Mode0 and GetSave("SOW").Mode0 or 32
+	GetSave("FTER_SOW").FarmDelay = GetSave("FTER_SOW").FarmDelay and GetSave("FTER_SOW").FarmDelay or 0
+	GetSave("FTER_SOW").ExtraWindUpTime = GetSave("FTER_SOW").ExtraWindUpTime and GetSave("FTER_SOW").ExtraWindUpTime or 50
+	GetSave("FTER_SOW").Mode3 = GetSave("FTER_SOW").Mode3 and GetSave("FTER_SOW").Mode3 or string.byte("X")
+	GetSave("FTER_SOW").Mode2 = GetSave("FTER_SOW").Mode2 and GetSave("FTER_SOW").Mode2 or string.byte("V")
+	GetSave("FTER_SOW").Mode1 = GetSave("FTER_SOW").Mode1 and GetSave("FTER_SOW").Mode1 or string.byte("C")
+	GetSave("FTER_SOW").Mode0 = GetSave("FTER_SOW").Mode0 and GetSave("FTER_SOW").Mode0 or 32
 
 	self.Attacks = true
 	self.Move = true
@@ -154,7 +154,7 @@ function SOW:__init(VP)
 	--AddAnimationCallback(function(Unit, Animation) self:OnAnimation(Unit, Animation) end)
 end
 
-function SOW:OnAnimation(unit, animation)
+function FTER_SOW:OnAnimation(unit, animation)
 	local dontlist={
 		["Run"]=true,
 		["Idle"]=true,
@@ -172,9 +172,9 @@ function SOW:OnAnimation(unit, animation)
 	end
 end
 
-function SOW:LoadToMenu(m, STS)
+function FTER_SOW:LoadToMenu(m, STS)
 	if not m then
-		self.Menu = scriptConfig("Simple OrbWalker", "SOW")
+		self.Menu = scriptConfig("Simple OrbWalker", "FTER_SOW")
 	else
 		self.Menu = m
 	end
@@ -188,8 +188,8 @@ function SOW:LoadToMenu(m, STS)
 	self.Menu:addParam("FarmDelay", "Farm Delay", SCRIPT_PARAM_SLICE, 0, 0, 150)
 	self.Menu:addParam("ExtraWindUpTime", "Extra WindUp Time", SCRIPT_PARAM_SLICE, 50,  0, 300)
 	
-	self.Menu.FarmDelay = GetSave("SOW").FarmDelay
-	self.Menu.ExtraWindUpTime = GetSave("SOW").ExtraWindUpTime
+	self.Menu.FarmDelay = GetSave("FTER_SOW").FarmDelay
+	self.Menu.ExtraWindUpTime = GetSave("FTER_SOW").ExtraWindUpTime
 
 	self.Menu:addParam("Attack",  "Attack", SCRIPT_PARAM_LIST, 2, { "Only Farming", "Farming + Carry mode"})
 	self.Menu:addParam("Mode",  "Orbwalking mode", SCRIPT_PARAM_LIST, 1, { "To mouse", "To target"})
@@ -212,10 +212,10 @@ function SOW:LoadToMenu(m, STS)
 	
 	
 	
-	self.Menu._param[self.Mode3ParamID].key = GetSave("SOW").Mode3
-	self.Menu._param[self.Mode2ParamID].key = GetSave("SOW").Mode2
-	self.Menu._param[self.Mode1ParamID].key = GetSave("SOW").Mode1
-	self.Menu._param[self.Mode0ParamID].key = GetSave("SOW").Mode0
+	self.Menu._param[self.Mode3ParamID].key = GetSave("FTER_SOW").Mode3
+	self.Menu._param[self.Mode2ParamID].key = GetSave("FTER_SOW").Mode2
+	self.Menu._param[self.Mode1ParamID].key = GetSave("FTER_SOW").Mode1
+	self.Menu._param[self.Mode0ParamID].key = GetSave("FTER_SOW").Mode0
 	
 	--[[fter44
 		Draw Ranges
@@ -236,7 +236,7 @@ function SOW:LoadToMenu(m, STS)
 	AddTickCallback(function() self:CheckConfig() end)
 	AddDrawCallback(function() self:OnDraw() end)
 end
-function SOW:OnDraw()
+function FTER_SOW:OnDraw()
 	if self.Menu.Draw.MyRange then	
 		DrawCircle3D(myHero.x, myHero.y, myHero.z, self:MyRange(), self.Menu.Draw.MyWidth, ARGB(255, 0, 255, 0))--GREEN
 	end
@@ -253,44 +253,44 @@ function SOW:OnDraw()
 end
 
 
-function SOW:DrawAARange(width, color)--fter44
+function FTER_SOW:DrawAARange(width, color)--fter44
 	local p = WorldToScreen(D3DXVECTOR3(myHero.x, myHero.y, myHero.z))
 	if OnScreen(p.x, p.y) then
 		DrawCircle3D(myHero.x, myHero.y, myHero.z, self:MyRange(), width or 1, color or ARGB(255, 255, 0, 0))
 	end
 end
-function SOW:DrawEnemyAARange(enemy,width, color)--fter44
+function FTER_SOW:DrawEnemyAARange(enemy,width, color)--fter44
 	--use self.VP:GetHitBox(myHero)
 	DrawCircle3D(enemy.x, enemy.y, enemy.z, enemy.range+self.VP:GetHitBox(enemy), width or 1, color or ARGB(255, 255, 0, 0))
 end
 
-function SOW:CheckConfig()
-	GetSave("SOW").FarmDelay = self.Menu.FarmDelay
-	GetSave("SOW").ExtraWindUpTime = self.Menu.ExtraWindUpTime
+function FTER_SOW:CheckConfig()
+	GetSave("FTER_SOW").FarmDelay = self.Menu.FarmDelay
+	GetSave("FTER_SOW").ExtraWindUpTime = self.Menu.ExtraWindUpTime
 
-	GetSave("SOW").Mode3 = self.Menu._param[self.Mode3ParamID].key
-	GetSave("SOW").Mode2 = self.Menu._param[self.Mode2ParamID].key
-	GetSave("SOW").Mode1 = self.Menu._param[self.Mode1ParamID].key
-	GetSave("SOW").Mode0 = self.Menu._param[self.Mode0ParamID].key
+	GetSave("FTER_SOW").Mode3 = self.Menu._param[self.Mode3ParamID].key
+	GetSave("FTER_SOW").Mode2 = self.Menu._param[self.Mode2ParamID].key
+	GetSave("FTER_SOW").Mode1 = self.Menu._param[self.Mode1ParamID].key
+	GetSave("FTER_SOW").Mode0 = self.Menu._param[self.Mode0ParamID].key
 end
 
-function SOW:DisableAttacks()
+function FTER_SOW:DisableAttacks()
 	self.Attacks = false
 end
 
-function SOW:EnableAttacks()
+function FTER_SOW:EnableAttacks()
 	self.Attacks = true
 end
 
-function SOW:ForceTarget(target)
+function FTER_SOW:ForceTarget(target)
 	self.forcetarget = target
 end
 
-function SOW:GetTime()
+function FTER_SOW:GetTime()
 	return os.clock()
 end
 
-function SOW:MyRange(target)
+function FTER_SOW:MyRange(target)
 	local myRange = myHero.range + self.VP:GetHitBox(myHero)
 	if target then --and ValidTarget(target) then -- fter44 only pass Valid Target
 		myRange = myRange + self.VP:GetHitBox(target)
@@ -298,17 +298,17 @@ function SOW:MyRange(target)
 	return myRange - 20
 end
 
-function SOW:InRange(target)
+function FTER_SOW:InRange(target)
 	local MyRange = self:MyRange(target)
 	if target and GetDistanceSqr(target.visionPos, myHero.visionPos) <= MyRange * MyRange then
 		return true
 	end
 end
-function SOW:ForceOrbWalkTo(pos)
+function FTER_SOW:ForceOrbWalkTo(pos)
 	self.forceorbwalkpos=pos
 end
 
-function SOW:OrbWalk(target, point)
+function FTER_SOW:OrbWalk(target, point)
 	point = point or self.forceorbwalkpos
 	if self.Attacks and self:CanAttack() and self:ValidTarget(target) and not self:BeforeAttack(target) then
 		self:Attack(target)
@@ -333,7 +333,7 @@ function SOW:OrbWalk(target, point)
 	end
 end
 
-function SOW:ValidTarget(target)
+function FTER_SOW:ValidTarget(target)
 	if target and target.type and (target.type == "obj_BarracksDampener" or target.type == "obj_HQ")  then --fter44--WHY??
 		local CollisionRange={["obj_BarracksDampener"]=205, ["obj_HQ"]=300}
 		local myRange = myHero.range + self.VP:GetHitBox(myHero) + CollisionRange[target.type]
@@ -343,19 +343,19 @@ function SOW:ValidTarget(target)
 	return ValidTarget(target) and self:InRange(target)
 end
 
-function SOW:WindUpTime(exact)
-	return (1 / (myHero.attackSpeed * self.BaseWindupTime)) + (exact and 0 or GetSave("SOW").ExtraWindUpTime / 1000)
+function FTER_SOW:WindUpTime(exact)
+	return (1 / (myHero.attackSpeed * self.BaseWindupTime)) + (exact and 0 or GetSave("FTER_SOW").ExtraWindUpTime / 1000)
 end
 
-function SOW:AnimationTime()
+function FTER_SOW:AnimationTime()
 	return (1 / (myHero.attackSpeed * self.BaseAnimationTime))
 end
 
-function SOW:Latency()
+function FTER_SOW:Latency()
 	return GetLatency() / 2000
 end
 
-function SOW:CanAttack()
+function FTER_SOW:CanAttack()
 	if self.LastAttack <= self:GetTime() then
 		if (self:GetTime() + self:Latency()  > self.LastAttack + self:AnimationTime()) then
 			return true
@@ -366,11 +366,11 @@ function SOW:CanAttack()
 --	if self.Menu.Debug then self:Print( math.floor(percentage*100).."%".." LastAttack:"..self.LastAttack.." ") end
 	return false
 end
-function SOW:GetNextAttackTime()
+function FTER_SOW:GetNextAttackTime()
 	return self.LastAttack + self:AnimationTime()
 end
 
-function SOW:BeforeAttack(target)
+function FTER_SOW:BeforeAttack(target)
 	local result = false
 	for i, cb in ipairs(self.BeforeAttackCallbacks) do
 		local ri = cb(target, self.mode)
@@ -381,39 +381,39 @@ function SOW:BeforeAttack(target)
 	return result
 end
 
-function SOW:RegisterBeforeAttackCallback(f)
+function FTER_SOW:RegisterBeforeAttackCallback(f)
 	table.insert(self.BeforeAttackCallbacks, f)
 end
 
-function SOW:OnAttack(target)
+function FTER_SOW:OnAttack(target)
 	for i, cb in ipairs(self.OnAttackCallbacks) do
 		cb(target, self.mode)
 	end
 end
 
-function SOW:RegisterOnAttackCallback(f)
+function FTER_SOW:RegisterOnAttackCallback(f)
 	table.insert(self.OnAttackCallbacks, f)
 end
 
-function SOW:AfterAttack(target)
+function FTER_SOW:AfterAttack(target)
 	for i, cb in ipairs(self.AfterAttackCallbacks) do
 		cb(target, self.mode)
 	end
 end
 
-function SOW:RegisterAfterAttackCallback(f)
+function FTER_SOW:RegisterAfterAttackCallback(f)
 	table.insert(self.AfterAttackCallbacks, f)
 end
 
-function SOW:MoveTo(x, y)
+function FTER_SOW:MoveTo(x, y)
 	myHero:MoveTo(x, y)
 end
 
-function SOW:IsAttack(SpellName)
+function FTER_SOW:IsAttack(SpellName)
 	return (SpellName:lower():find("attack") or table.contains(self.AttackTable, SpellName:lower())) and not table.contains(self.NoAttackTable, SpellName:lower())
 end
 
-function SOW:IsAAReset(SpellName)
+function FTER_SOW:IsAAReset(SpellName)
 	local SpellID
 	if SpellName:lower() == myHero:GetSpellData(_Q).name:lower() then
 		SpellID = _Q
@@ -432,13 +432,13 @@ end
 
 
 if myHero.charName==Thresh then
-	function SOW:CanMove()
+	function FTER_SOW:CanMove()
 		if self.LastAttack <= self:GetTime() then
 			return (self.Attack_Completed) and not _G.evade
 		end
 	end
 else
-	function SOW:CanMove()
+	function FTER_SOW:CanMove()
 		if self.LastAttack <= self:GetTime() then
 			return (self.Attack_Completed or (self:GetTime() + self:Latency() > self.LastAttack + self:WindUpTime()) ) and not _G.evade
 		end
@@ -452,7 +452,7 @@ for x=0,0xFF do
   end
 end
 
-function SOW:OnSendPacket(p)
+function FTER_SOW:OnSendPacket(p)
 	if p.header==Packet.headers.S_MOVE then
 		packet=Packet(p)
 		if packet:get('type') == 3 or packet:get('type') == 7 then
@@ -463,7 +463,7 @@ function SOW:OnSendPacket(p)
 	end
 end
 
-function SOW:OnRecvPacket(p)--fter44
+function FTER_SOW:OnRecvPacket(p)--fter44
 	if p.header==51 then --Attacks
 		p.pos = 1
 		local networkID = p:DecodeF()
@@ -503,7 +503,7 @@ function SOW:OnRecvPacket(p)--fter44
 		self:Process_Attack_Completed(p)
 	end
 end
-function SOW:AADamageSpawned(p)
+function FTER_SOW:AADamageSpawned(p)
 	if p.header==100 then--DAMAGE INDICATOR --134 MELEE --ALSO AFTER CASTED PARITLCE 
 		p.pos=1 	local attacked=p:DecodeF()
 					local Dtype = p:Decode1()    --Dtype(hex)  24:true damage 03,04,0C:physical 14:magical
@@ -517,7 +517,7 @@ function SOW:AADamageSpawned(p)
 		end
 	end
 end
-function SOW:ParticleCreated(p)
+function FTER_SOW:ParticleCreated(p)
 	if p.header==109 then --RANGE PARTICLE CREATED --or MUNDO Q PARTICLE CREATED
 		p.pos=1	local generator=p:DecodeF()
 		if generator==myHero.networkID then
@@ -536,7 +536,7 @@ local RANGE={}
 local HYBRID={nidalee,elise,jayce}
 local THRESH={velkoz,thresh}
 if table.contains(HYBRID,myHero.charName:lower()) then
-	function SOW:Process_Attack_Completed(p)
+	function FTER_SOW:Process_Attack_Completed(p)
 		if myHero.range>400 then		
 			self:ParticleCreated(p)
 		else
@@ -544,20 +544,20 @@ if table.contains(HYBRID,myHero.charName:lower()) then
 		end
 	end	
 elseif table.contains(THRESH,myHero.charName:lower()) then
-	function SOW:Process_Attack_Completed(p)
+	function FTER_SOW:Process_Attack_Completed(p)
 		self:AADamageSpawned(p)
 	end
 elseif table.contains(MELEE,myHero.charName:lower()) or myHero.range<425   then --MELEE	
-	function SOW:Process_Attack_Completed(p)
+	function FTER_SOW:Process_Attack_Completed(p)
 		self:AADamageSpawned(p)
 	end
 elseif table.contains(RANGE,myHero.charName:lower()) or myHero.range>=425 then
-	function SOW:Process_Attack_Completed(p)
+	function FTER_SOW:Process_Attack_Completed(p)
 		self:ParticleCreated(p)
 	end
 
 end
-function SOW:OnProcessSpell(unit, spell)
+function FTER_SOW:OnProcessSpell(unit, spell)
 	if unit.isMe and self:IsAttack(spell.name) then
 		if self.debugdps then
 			DPS = DPS and DPS or 0
@@ -603,7 +603,7 @@ function SOW:OnProcessSpell(unit, spell)
 	end
 end
 
-function SOW:resetAA()
+function FTER_SOW:resetAA()
 	self.LastAttack = 0
 	self.last_AA_target=nil
 	self.Attack_Completed = true
@@ -611,7 +611,7 @@ function SOW:resetAA()
 	if self.Menu.Debug then self:Print("resetAA() called") end
 end
 --TODO: Change this.
-function SOW:BonusDamage(minion)
+function FTER_SOW:BonusDamage(minion)
 	local AD = myHero:CalcDamage(minion, myHero.totalDamage)
 	local BONUS = 0
 	if myHero.charName == 'Vayne' then
@@ -725,11 +725,11 @@ function SOW:BonusDamage(minion)
 	return BONUS
 end
 
-function SOW:KillableMinion()
+function FTER_SOW:KillableMinion()
 	local result
 	for i, minion in ipairs(self.EnemyMinions.objects) do
 		local time = self:WindUpTime(true) + GetDistance(minion.visionPos, myHero.visionPos) / self.ProjectileSpeed - 0.07
-		local PredictedHealth = self.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		local PredictedHealth = self.VP:GetPredictedHealth(minion, time, GetSave("FTER_SOW").FarmDelay / 1000)
 		if self:ValidTarget(minion) and PredictedHealth < self.VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + self:BonusDamage(minion) and PredictedHealth > -40 then
 			result = minion
 			break
@@ -738,7 +738,7 @@ function SOW:KillableMinion()
 	return result
 end
 
-function SOW:ShouldWait()
+function FTER_SOW:ShouldWait()
 	for i, minion in ipairs(self.EnemyMinions.objects) do
 		local time = self:AnimationTime() + GetDistance(minion.visionPos, myHero.visionPos) / self.ProjectileSpeed - 0.07
 		if self:ValidTarget(minion) and self.VP:GetPredictedHealth2(minion, time * 2) < (self.VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + self:BonusDamage(minion)) then
@@ -747,7 +747,7 @@ function SOW:ShouldWait()
 	end
 end
 
-function SOW:ValidStuff()
+function FTER_SOW:ValidStuff()
 	local result = self:GetTarget()
 
 	if result then 
@@ -756,7 +756,7 @@ function SOW:ValidStuff()
 
 	for i, minion in ipairs(self.EnemyMinions.objects) do
 		local time = self:AnimationTime() + GetDistance(minion.visionPos, myHero.visionPos) / self.ProjectileSpeed - 0.07
-		local pdamage2 = minion.health - self.VP:GetPredictedHealth(minion, time, GetSave("SOW").FarmDelay / 1000)
+		local pdamage2 = minion.health - self.VP:GetPredictedHealth(minion, time, GetSave("FTER_SOW").FarmDelay / 1000)
 		local pdamage = self.VP:GetPredictedHealth2(minion, time * 2)
 		if self:ValidTarget(minion) and ((pdamage) > 2*self.VP:CalcDamageOfAttack(myHero, minion, {name = "Basic"}, 0) + self:BonusDamage(minion) or pdamage2 == 0) then
 			return minion
@@ -776,7 +776,7 @@ function SOW:ValidStuff()
 	end
 end
 
-function SOW:GetTarget(OnlyChampions)
+function FTER_SOW:GetTarget(OnlyChampions)
 	local result
 	local healthRatio
 
@@ -811,7 +811,7 @@ function SOW:GetTarget(OnlyChampions)
 	return result
 end
 
-function SOW:Farm(mode, point)
+function FTER_SOW:Farm(mode, point)
 	if mode == 1 then --Mix
 		local target
 		self.EnemyMinions:update()
@@ -853,7 +853,7 @@ function SOW:Farm(mode, point)
 end
 
 
-function SOW:Attack(target)
+function FTER_SOW:Attack(target)
 	self.LastAttack = self:GetTime() + self:Latency()
 	self.Attack_Completed=false--fter44
 	self.AA_OnProcessSpell_Fired = false
@@ -864,7 +864,7 @@ function SOW:Attack(target)
 end
 
 
-function SOW:OnTick()
+function FTER_SOW:OnTick()
 	if not self.Menu.Enabled then return end
 	
 	if self.AA_OnProcessSpell_Fired==false and os.clock() > self.AA_OnProcessSpell_Limit then --fter44
@@ -891,13 +891,13 @@ function SOW:OnTick()
 		self.mode = -1
 	end
 end
-function SOW:Print(str) --fter44
+function FTER_SOW:Print(str) --fter44
 	if GetUser()=="fter44" then
 		local time=string.format(" %.2f",os.clock())
-		print("<font color=\"#6699ff\"><b>SOW:</b></font> <font color=\"#FFFFFF\">"..str..time..".</font>")
-		lib.print("SOW:"..str.."-"..time)
+		print("<font color=\"#6699ff\"><b>FTER_SOW:</b></font> <font color=\"#FFFFFF\">"..str..time..".</font>")
+		lib.print("FTER_SOW:"..str.."-"..time)
 	end
 end
-function SOW:GetState()--fter44
+function FTER_SOW:GetState()--fter44
 	return self.state
 end

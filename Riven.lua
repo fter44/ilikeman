@@ -75,7 +75,7 @@ local E
 local R
 function OnLoad()
 	VP = VPrediction()	
-	SOWi = SOW(VP)	
+	SOWi = FTER_SOW(VP)	
 	STS = SimpleTS(STS_PRIORITY_LESS_CAST_MAGIC)
 	--Q
 		Q  = Spell(_Q,SPELL_DATA[_Q  ].range)
@@ -448,7 +448,7 @@ function PrintAlert_T(id,text,duration,r,g,b)
 		Alert_Texts[id]=os.clock()+10
 	end	
 end
-function SOW:BonusDamage(minion) 
+function FTER_SOW:BonusDamage(minion) 
 	if P_Stack>0 then 		
 		return Riven_GetDmg(_PASIVE,minion,false)-5 --
 	end
