@@ -2,7 +2,7 @@ if myHero.charName ~= "Amumu" then return end
 
 
 
-local version = "0.24"
+local version = "0.25"
 local SCRIPT_NAME = "Amumu"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -80,7 +80,9 @@ function Load_Menu()
 		menu.Q:addParam("laneclear", "Q@laneclear", SCRIPT_PARAM_ONOFF, true)
 		menu.Q:addParam("jungle", "Q@jungle", SCRIPT_PARAM_ONOFF, true)
 		menu.Q:addParam("cast", "Manual Cast",SCRIPT_PARAM_ONKEYDOWN,false,string.byte("A"))
-	menu:addSubMenu("W", "W") 
+	menu:addSubMenu("W", "W")
+		menu.W:addParam("ON", "Auto Turn On W", SCRIPT_PARAM_ONOFF, true) 
+		menu.W:addParam("OFF", "Auto Turn Off W", SCRIPT_PARAM_ONOFF, true) 
 		menu.W:addParam("mana", "Check Mana for others", SCRIPT_PARAM_ONOFF, true) 
 		menu.W:addParam("Q", "mana check Q", SCRIPT_PARAM_ONOFF, true) 
 		menu.W:addParam("E", "mana check E", SCRIPT_PARAM_ONOFF, true) 
@@ -272,16 +274,20 @@ end
 function CAST_W(target,force)--8 mana per seec
 	if W_ON then
 		if not W:IsInRangeAdv(target) or (menu.W.mana and not Is_Mana_Enough(menu.W.Q,menu.W.E,menu.W.R)) then--MANA CHECK
-			W:Cast()--OFF
+			if menu.W.OFF then
+				W:Cast()--OFF
+			end
 		end
 	else
 		if W:IsInRangeAdv(target) and (force or (not menu.W.mana or Is_Mana_Enough(menu.W.Q,menu.W.E,menu.W.R)) )then
-			W:Cast()--ON
+			if menu.W.ON then
+				W:Cast()--ON
+			end
 		end
 	end
 end
 function CAST_W_OFF()
-	if W_ON then
+	if W_ON and menu.W.OFF then
 		W:Cast()--OFF
 	end
 end

@@ -4,7 +4,7 @@ if myHero.charName ~= "Jax" then return end
 
 
 
-local version = "0.24"
+local version = "0.25"
 local SCRIPT_NAME = "Jax"
 local AUTOUPDATE = true
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -50,6 +50,10 @@ local SPELL_DATA = { [_Q] = { skillshotType = nil, range = 700},
 					 [_E] = { skillshotType = nil, range = 375},
 					 [_R] = { skillshotType = nil, range = 375},
 }
+
+--[[MAIN TARGET]]--
+local Target
+local Target_Circle
 function OnLoad()
 	VP = VPrediction()	
 	SOWi = FTER_SOW(VP)
@@ -109,6 +113,7 @@ function OnLoad()
 		local DManager = DrawManager()
 		DManager:CreateCircle(myHero, SPELL_DATA[_Q].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"Q range", true, true, true)
 		DManager:CreateCircle(myHero, SPELL_DATA[_E].range, 1, {255, 255, 255, 255}):AddToMenu(menu.Drawings,"E range", true, true, true)
+		Target_Circle=_Circle(myHero,200):AddToMenu(menu.Drawings, "Target Circle", true, true, true)
 	--	DLib:AddToMenu(menu.Drawings,{_AA,_Q,_Q,_E,_E,_IGNITE})
 	--KEY
 	menu:addParam("combo","combo", SCRIPT_PARAM_ONKEYDOWN, false, string.byte('C'))  menu:permaShow("combo")
@@ -140,8 +145,8 @@ function Auto_E_Explore()
 end
 function OnTick()
 	Auto_E_Explore()--E	
-	local Target = STS:GetTarget(SPELL_DATA[_Q].range)
-	if not Target or not ValidTarget(Target) then return end
+	Target = STS:GetTarget(SPELL_DATA[_Q].range)
+	if not ValidTarget(Target) then return end
 	
 	
 	
@@ -222,6 +227,12 @@ local _R_STACK=0 --1 2 3(pop) 4 5 6(pop)
 local _R_ON=false
 
 function OnDraw()
+	
+	if ValidTarget(Target) then
+		Target_Circle.position=Target
+		Target_Circle:Draw()
+	end
+	
 	for _, enemy in pairs(GetEnemyHeroes()) do
 		if ValidTarget(enemy) then
 			local barPos = WorldToScreen(D3DXVECTOR3(enemy.x, enemy.y, enemy.z))
